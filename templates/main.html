@@ -1,0 +1,37 @@
+{% extends "base_index.html" %}
+
+{% block content %}
+  <!-- Героический заголовок -->
+  <div class="p-5 mb-4 bg-light rounded-3 d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="text-center">
+      <h1 class="display-5 fw-bold">Добро пожаловать на платформу портфолио студентов!</h1>
+      <p class="fs-4">Создавайте, делитесь и продвигайте свои портфолио для привлечения внимания работодателей.</p>
+    </div>
+  </div>
+
+  <!-- Информационные блоки -->
+  <div class="row row-cols-1 row-cols-md-2 mb-3 text-center justify-content-center">
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-header py-3">
+          <h4 class="my-0 fw-normal">Для студентов</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">Создавайте и делитесь своим портфолио, привлекайте внимание работодателей.</p>
+          <a href="{{ url_for('students') }}" class="btn btn-lg btn-outline-primary">Узнать больше</a>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card mb-4 rounded-3 shadow-sm">
+        <div class="card-header py-3">
+          <h4 class="my-0 fw-normal">Для работодателей</h4>
+        </div>
+        <div class="card-body">
+          <p class="card-text">Ищите таланты среди студентов, предлагайте стажировки и вакансии.</p>
+          <a href="{{ url_for('employers') }}" class="btn btn-lg btn-outline-primary">Узнать больше</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

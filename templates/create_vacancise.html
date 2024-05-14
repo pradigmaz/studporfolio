@@ -1,0 +1,63 @@
+{% extends "base_employers.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="mb-4">Создание новой вакансии</h1>
+
+      <form method="post">
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+          <label for="title" class="form-label">Название вакансии</label>
+          {{ form.title(class="form-control", size=32) }}
+        </div>
+        
+        <div class="mb-3">
+          <label for="description" class="form-label">Описание вакансии</label>
+          {{ form.description(class="form-control", rows=5) }}
+        </div>
+
+        <div class="mb-3">
+          <label for="employment_type" class="form-label">Тип занятости</label>
+          {{ form.employment_type(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+          <label for="responsibilities" class="form-label">Обязанности</label>
+          {{ form.responsibilities(class="form-control", rows=5) }}
+        </div>
+
+        <div class="mb-3">
+          <label for="requirements" class="form-label">Требования</label>
+          {{ form.requirements(class="form-control", rows=5) }}
+        </div>
+
+        <div class="mb-3">
+          <label for="conditions" class="form-label">Условия работы</label>
+          {{ form.conditions(class="form-control", rows=5) }}
+        </div>
+
+        <div class="mb-3">
+          <label for="key_skills" class="form-label">Ключевые навыки</label>
+          {{ form.key_skills(class="form-control", rows=5) }}
+        </div>
+
+        <div class="mb-3">
+            <label for="field" class="form-label">Сфера деятельности</label>
+            {{ form.field(class="form-select", id="field") }}
+        </div>
+        
+        <div class="mb-4 form-check">
+          {{ form.is_active(class="form-check-input") }}
+          <label for="is_active" class="form-check-label">Активна</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Создать вакансию</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

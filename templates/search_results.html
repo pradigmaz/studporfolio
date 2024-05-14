@@ -1,0 +1,18 @@
+{% extends base_template %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-3">Результаты поиска для "{{ query }}"</h1>
+    {% if users %}
+        <div class="list-group">
+            {% for user in users %}
+                <a href="{{ url_for('profile_students', username=user.username) }}" class="list-group-item list-group-item-action">
+                    {{ user.first_name }} {{ user.surname }}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">Пользователи не найдены.</p>
+    {% endif %}
+</div>
+{% endblock %}

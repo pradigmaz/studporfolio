@@ -1,0 +1,52 @@
+{% extends "base_students.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">Создание проекта</h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              {{ form.title.label(class="form-label") }}
+              {{ form.title(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.description.label(class="form-label") }}
+              {{ form.description(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.field.label(class="form-label") }}
+              {{ form.field(class="form-select") }}
+            </div>
+            <div class="mb-4">
+              {{ form.files.label(class="form-label") }}
+              {{ form.files(class="form-control", multiple="multiple") }}
+              <div class="form-text">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Поддерживаемые форматы: PDF, DOCX, PPTX
+              </div>
+              <ul class="list-group mt-2">
+                {% if form.files.data %}
+                  {% for file in form.files.data %}
+                    <li class="list-group-item">{{ file.filename }}</li>
+                  {% endfor %}
+                {% else %}
+                  <li class="list-group-item">Нет файлов</li>
+                {% endif %}
+              </ul>
+            </div>
+            <div class="d-grid">
+              {{ form.submit(class="btn btn-dark btn-lg") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
