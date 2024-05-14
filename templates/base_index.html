@@ -179,25 +179,35 @@
         <form method="post" action="{{ url_for('register') }}">
           {{ employer_register_form.hidden_tag() }}
           <div class="mb-3">
-            {{ employer_register_form.company_name.label(class="form-label") }}
-            {{ employer_register_form.company_name(class="form-control") }}
+            <label for="employerCompanyName" class="form-label">
+              <i class="bi bi-building me-2"></i>{{ employer_register_form.company_name.label.text }}
+            </label>
+            {{ employer_register_form.company_name(class="form-control", id="employerCompanyName") }}
           </div>
           <div class="mb-3">
-            {{ employer_register_form.contact_name.label(class="form-label") }}
-            {{ employer_register_form.contact_name(class="form-control") }}
+            <label for="employerContactName" class="form-label">
+              <i class="bi bi-person-fill me-2"></i>{{ employer_register_form.contact_name.label.text }}
+            </label>
+            {{ employer_register_form.contact_name(class="form-control", id="employerContactName") }}
           </div>
           <div class="mb-3">
-            {{ employer_register_form.email.label(class="form-label") }}
-            {{ employer_register_form.email(class="form-control") }}
+            <label for="employerEmail" class="form-label">
+              <i class="bi bi-envelope-fill me-2"></i>{{ employer_register_form.email.label.text }}
+            </label>
+            {{ employer_register_form.email(class="form-control", id="employerEmail") }}
           </div>
           <div class="mb-3">
-            {{ employer_register_form.phone_number.label(class="form-label") }}
-            {{ employer_register_form.phone_number(class="form-control", placeholder="+7 (___)-___-__-__") }}
+            <label for="employerPhoneNumber" class="form-label">
+              <i class="bi bi-telephone-fill me-2"></i>{{ employer_register_form.phone_number.label.text }}
+            </label>
+            {{ employer_register_form.phone_number(class="form-control", id="employerPhoneNumber", placeholder="+7 (___)-___-__-__") }}
           </div>
           <div class="mb-3 position-relative">
-            {{ employer_register_form.password.label(class="form-label") }}
+            <label for="employerPassword" class="form-label">
+              <i class="bi bi-lock-fill me-2"></i>{{ employer_register_form.password.label.text }}
+            </label>
             <div class="input-group">
-              {{ employer_register_form.password(class="form-control password-toggle") }}
+              {{ employer_register_form.password(class="form-control password-toggle", id="employerPassword") }}
               <span class="input-group-text">
                 <i class="bi bi-eye-slash toggle-password" style="cursor: pointer;"></i>
               </span>
@@ -209,9 +219,11 @@
             <small class="form-text text-muted">Пароль должен содержать минимум 8 символов, включая хотя бы одну заглавную букву, цифры и спец. символы.</small>
           </div>
           <div class="mb-3 position-relative">
-            {{ employer_register_form.confirm_password.label(class="form-label") }}
+            <label for="employerConfirmPassword" class="form-label">
+              <i class="bi bi-lock-fill me-2"></i>{{ employer_register_form.confirm_password.label.text }}
+            </label>
             <div class="input-group">
-              {{ employer_register_form.confirm_password(class="form-control password-toggle") }}
+              {{ employer_register_form.confirm_password(class="form-control password-toggle", id="employerConfirmPassword") }}
               <span class="input-group-text">
                 <i class="bi bi-eye-slash toggle-password" style="cursor: pointer;"></i>
               </span>
@@ -231,40 +243,56 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title" id="registerModalStudentLabel">Регистрация студента</h5>
+        <h5 class="modal-title" id="registerModalStudentLabel">
+          <i class="bi bi-person-plus-fill me-2"></i>Регистрация студента
+        </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body bg-white">
         <form method="post" action="{{ url_for('register') }}">
           {{ student_register_form.hidden_tag() }}
           <div class="mb-3">
-            {{ student_register_form.surname.label(class="form-label") }}
-            {{ student_register_form.surname(class="form-control") }}
+            <label for="studentSurname" class="form-label">
+              <i class="bi bi-person-fill me-2"></i>{{ student_register_form.surname.label.text }}
+            </label>
+            {{ student_register_form.surname(class="form-control", id="studentSurname") }}
           </div>
           <div class="mb-3">
-            {{ student_register_form.first_name.label(class="form-label") }}
-            {{ student_register_form.first_name(class="form-control") }}
+            <label for="studentFirstName" class="form-label">
+              <i class="bi bi-person-fill me-2"></i>{{ student_register_form.first_name.label.text }}
+            </label>
+            {{ student_register_form.first_name(class="form-control", id="studentFirstName") }}
           </div>
           <div class="mb-3">
-            {{ student_register_form.middle_name.label(class="form-label") }}
-            {{ student_register_form.middle_name(class="form-control") }}
+            <label for="studentMiddleName" class="form-label">
+              <i class="bi bi-person-fill me-2"></i>{{ student_register_form.middle_name.label.text }}
+            </label>
+            {{ student_register_form.middle_name(class="form-control", id="studentMiddleName") }}
           </div>
           <div class="mb-3">
-            {{ student_register_form.username.label(class="form-label") }}
-            {{ student_register_form.username(class="form-control") }}
+            <label for="studentUsername" class="form-label">
+              <i class="bi bi-person-circle me-2"></i>{{ student_register_form.username.label.text }}
+            </label>
+            {{ student_register_form.username(class="form-control", id="studentUsername") }}
           </div>
           <div class="mb-3">
-            {{ student_register_form.phone_number.label(class="form-label") }}
-            {{ student_register_form.phone_number(class="form-control", placeholder="+7 (___)-___-__-__") }}
+            <label for="studentPhoneNumber" class="form-label">
+              <i class="bi bi-telephone-fill me-2"></i>{{ student_register_form.phone_number.label.text }}
+            </label>
+            {{ student_register_form.phone_number(class="form-control", id="studentPhoneNumber", placeholder="+7 (___)-___-__-__") }}
           </div>
           <div class="mb-3">
-            {{ student_register_form.email.label(class="form-label") }}
-            {{ student_register_form.email(class="form-control") }}
+            <label for="studentEmail" class="form-label">
+              <i class="bi bi-envelope-fill me-2"></i>{{ student_register_form.email.label.text }}
+            </label>
+            {{ student_register_form.email(class="form-control", id="studentEmail") }}
           </div>
           <div class="mb-3 position-relative">
-            {{ student_register_form.password.label(class="form-label") }}
+            <label for="studentPassword" class="form-label">
+              <i class="bi bi-lock-fill me-2"></i>{{ student_register_form.password.label.text }}
+            </label>
             <div class="input-group">
-              {{ student_register_form.password(class="form-control password-toggle") }}
+              {{ student_register_form.password(class="form-control password-toggle", id="studentPassword") }}
               <span class="input-group-text">
                 <i class="bi bi-eye-slash toggle-password" style="cursor: pointer;"></i>
               </span>
@@ -276,9 +304,11 @@
             <small class="form-text text-muted">Пароль должен содержать минимум 8 символов, включая хотя бы одну заглавную букву, цифры и спец. символы.</small>
           </div>
           <div class="mb-3 position-relative">
-            {{ student_register_form.confirm_password.label(class="form-label") }}
+            <label for="studentConfirmPassword" class="form-label">
+              <i class="bi bi-lock-fill me-2"></i>{{ student_register_form.confirm_password.label.text }}
+            </label>
             <div class="input-group">
-              {{ student_register_form.confirm_password(class="form-control password-toggle") }}
+              {{ student_register_form.confirm_password(class="form-control password-toggle", id="studentConfirmPassword") }}
               <span class="input-group-text">
                 <i class="bi bi-eye-slash toggle-password" style="cursor: pointer;"></i>
               </span>
