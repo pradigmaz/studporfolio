@@ -2,35 +2,57 @@
 
 .navbar-shrink {
   padding: 0.5rem 1rem !important;
-  transition: padding 0.3s ease-in-out, transform 0.3s ease-in-out;
-  justify-content: center; /* Центрирование элементов */
-  font-size: 0.5rem; /* Уменьшение размера текста */
+  transition: padding 0.3s ease-in-out;
+  font-size: 0.8rem; /* Уменьшение размера текста */
 }
 
 .navbar {
   padding: 2rem 1rem;
-  transition: padding 0.3s ease-in-out, transform 0.3s ease-in-out;
+  transition: padding 0.3s ease-in-out;
   display: flex;
   justify-content: space-between; /* Распределение элементов по краям */
   font-size: 1rem; /* Начальный размер текста */
 }
 
 .navbar-brand {
-  transition: transform 0.3s ease-in-out;
+  margin-right: auto; /* Сдвигаем "Студпортфолио" вправо */
+  padding-left: 20px; /* Базовый отступ слева */
 }
 
 .navbar-nav {
-  transition: transform 0.3s ease-in-out;
+  margin-left: auto; /* Сдвигаем элементы справа влево */
+  padding-right: 20px; /* Базовый отступ справа */
 }
 
-.navbar-shrink .navbar-brand {
-  transform: translateX(180%); /* Увеличенное смещение вправо */
-  /* или можно использовать margin для смещения */
-  margin-right: 100px; /* Добавляет отступ справа */
+/* Медиа-запросы для адаптивного изменения отступов */
+@media (min-width: 768px) {
+  .navbar-brand {
+    padding-left: 50px; /* Отступ слева для экранов >= 768px */
+  }
+
+  .navbar-nav {
+    padding-right: 50px; /* Отступ справа для экранов >= 768px */
+  }
 }
 
-.navbar-shrink .navbar-nav {
-  transform: translateX(-100%); /* Увеличенное смещение влево */
+@media (min-width: 1024px) {
+  .navbar-brand {
+    padding-left: 100px; /* Отступ слева для экранов >= 1024px */
+  }
+
+  .navbar-nav {
+    padding-right: 100px; /* Отступ справа для экранов >= 1024px */
+  }
+}
+
+@media (min-width: 1440px) {
+  .navbar-brand {
+    padding-left: 190px; /* Отступ слева для экранов >= 1440px */
+  }
+
+  .navbar-nav {
+    padding-right: 190px; /* Отступ справа для экранов >= 1440px */
+  }
 }
 
 /*|| Футтер ||*/
