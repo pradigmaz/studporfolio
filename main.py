@@ -1,9 +1,10 @@
 from flask import Flask
 from config import Config
 from models import db, User, Student, Employer, RoleEnum
-from routes import auth_bp
+from routes import auth_bp, project_bp, vacancy_bp, filters_bp, application_bp
 from flask_login import LoginManager
 import logging
+from werkzeug.serving import WSGIRequestHandler
 
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
@@ -24,6 +25,17 @@ def load_user(user_id):
 
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(project_bp)
+app.register_blueprint(vacancy_bp)
+app.register_blueprint(filters_bp)
+app.register_blueprint(application_bp)
+
+class UTF8RequestHandler(WSGIRequestHandler):
+    def send_response(self, code, message=None):
+        self._headers_buffer = []
+        self._headers_buffer.append(("%s %d %s\r\n" %
+                                     (self.protocol_version, code, message)).encode('utf-8', 'strict'))
+        self.send_header('Content-Type', 'text/html; charset=utf-8')
 
 
 if __name__ == '__main__':
@@ -52,4 +64,4 @@ if __name__ == '__main__':
 
         db.session.commit()
 
-    app.run(debug=True, use_reloader=True)
+    app.run(debug=True, use_reloader=True, request_handler=UTF8RequestHandler)

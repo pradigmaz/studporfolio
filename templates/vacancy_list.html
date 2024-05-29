@@ -1,0 +1,20 @@
+{% extends "base_employer.html" %}
+
+{% block content %}
+<main class="container mt-5">
+  <h1>Список вакансий</h1>
+  <a href="{{ url_for('vacancy.create_vacancy') }}" class="btn btn-primary mb-3">Создать новую вакансию</a>
+  <ul class="list-group">
+    {% for vacancy in vacancies %}
+    <li class="list-group-item">
+      <h2>{{ vacancy.title }}</h2>
+      <p>{{ vacancy.description }}</p>
+      <a href="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-secondary">Редактировать</a>
+      <form action="{{ url_for('vacancy.delete_vacancy', vacancy_id=vacancy.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger">Удалить</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+{% endblock %}

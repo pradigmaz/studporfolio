@@ -1,0 +1,47 @@
+{% extends "base_employer.html" %} 
+
+{% block content %}
+    <div class="container">
+        <h1>Edit Vacancy</h1>
+        <form method="POST" action="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.employment_type.label(class="form-label") }}
+                {{ form.employment_type(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.responsibilities.label(class="form-label") }}
+                {{ form.responsibilities(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.requirements.label(class="form-label") }}
+                {{ form.requirements(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.conditions.label(class="form-label") }}
+                {{ form.conditions(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.key_skills.label(class="form-label") }}
+                {{ form.key_skills(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.specialty.label(class="form-label") }}
+                {{ form.specialty(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary", label="Сохранить изменения") }}
+                <a href="{{ url_for('vacancy.list_vacancies') }}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</body>
+{% endblock %}

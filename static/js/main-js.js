@@ -26,86 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
-// скрипт для показа пароля
-document.addEventListener('DOMContentLoaded', function() {
-  const togglePassword = document.querySelectorAll('.toggle-password');
-  
-  togglePassword.forEach(function(toggle) {
-    toggle.addEventListener('click', function() {
-      const passwordField = this.previousElementSibling;
-      if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-      } else {
-        passwordField.type = 'password';
-      }
-    });
-  });
-});
-
-// скрипт для сложности пароля
-document.addEventListener('DOMContentLoaded', function() {
-  const passwordFields = [
-    { input: document.getElementById('password'), strength: document.getElementById('password-strength') },
-    { input: document.getElementById('employer_password'), strength: document.getElementById('employer-password-strength') }
-  ];
-
-  passwordFields.forEach(field => {
-    field.input.addEventListener('input', function() {
-      const value = field.input.value;
-      let strength = 0;
-      if (value.length >= 8) strength++;
-      if (/[A-Z]/.test(value)) strength++;
-      if (/[a-z]/.test(value)) strength++;
-      if (/[0-9]/.test(value)) strength++;
-      if (/[\W_]/.test(value)) strength++;
-
-      field.strength.style.width = '100%';
-      field.strength.style.height = '5px';
-      field.strength.style.borderRadius = '3px';
-      field.strength.style.transition = 'background-color 0.5s, box-shadow 0.5s';
-
-      if (strength <= 2) {
-        field.strength.style.backgroundColor = 'red';
-        field.strength.style.boxShadow = '0 0 10px red';
-      } else if (strength <= 4) {
-        field.strength.style.backgroundColor = 'yellow';
-        field.strength.style.boxShadow = '0 0 10px yellow';
-      } else {
-        field.strength.style.backgroundColor = 'green';
-        field.strength.style.boxShadow = '0 0 10px green';
-      }
-    });
-  });
-
-  document.querySelectorAll('.toggle-password').forEach(button => {
-    button.addEventListener('click', function() {
-      const input = this.previousElementSibling;
-      input.type = input.type === 'password' ? 'text' : 'password';
-    });
-  });
-});
-
-// скрипт генерации пароля
-function generatePassword(length = 12) {
-  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
-  }
-  return password;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".generate-password").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const passwordField = event.target.previousElementSibling;
-      passwordField.value = generatePassword();
-    });
-  });
-});
-
 // скрипт для модальных окон
 document.addEventListener("hidden.bs.modal", function (event) {
   if (document.querySelectorAll(".modal.show").length) {
@@ -115,4 +35,53 @@ document.addEventListener("hidden.bs.modal", function (event) {
       backdrop.remove();
     });
   }
+});
+
+// скрит для сложности пароля
+document.addEventListener("DOMContentLoaded", function () {
+  const modals = ['#registerModalStudent', '#registerModalEmployer'];
+  modals.forEach(modal => {
+    const passwordInput = document.querySelector(`${modal} input[name="password"]`);
+    if (passwordInput) {
+      const strengthMeter = document.createElement("div");
+      strengthMeter.classList.add("strengthMeter");
+      passwordInput.parentNode.appendChild(strengthMeter);
+
+      passwordInput.addEventListener("input", function () {
+        const value = passwordInput.value;
+        let strength = 0;
+        if (/[A-Z]/.test(value)) strength++;
+        if (/[a-z]/.test(value)) strength++;
+        if (/[0-9]/.test(value)) strength++;
+        if (/[\W]/.test(value)) strength++;
+        if (value.length >= 8) strength++;
+
+        strengthMeter.style.width = `${strength * 20}%`;
+        strengthMeter.style.backgroundColor =
+          strength < 3 ? "red" : strength < 4 ? "yellow" : "green";
+      });
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const togglePasswordButtons = document.querySelectorAll(".toggle-password");
+  togglePasswordButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const passwordInputId = this.getAttribute("data-target");
+      const passwordInput = document.getElementById(passwordInputId);
+      const icon = this.querySelector("i");
+
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+      } else {
+        passwordInput.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+      }
+    });
+  });
 });

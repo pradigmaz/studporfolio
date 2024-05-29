@@ -1,7 +1,6 @@
 {% extends "base_employer.html" %}
 
-{%block content%}
-
+{% block content %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-3">
@@ -31,22 +30,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for vacancy in current_user.vacancies %}
+                    {% for vacancy in current_user.employer.vacancies %}
                     <tr>
                         <td>{{ vacancy.title }}</td>
                         <td>{{ vacancy.description }}</td>
                         <td>
-                            <a href="#" class="btn btn-primary btn-sm">Редактировать</a>
-                            <a href="#" class="btn btn-danger btn-sm">Удалить</a>
+                            <a href="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-primary btn-sm">Редактировать</a>
+                            <form action="{{ url_for('vacancy.delete_vacancy', vacancy_id=vacancy.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            
         </div>
     </div>
 </div>
-
-
-{%endblock%}
+{% endblock %}

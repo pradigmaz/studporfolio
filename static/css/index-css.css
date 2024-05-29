@@ -156,19 +156,10 @@ footer {
 
 /*|| ПАРОЛЬ ||*/
 
-  .strength-bar {
+.strengthMeter {
     height: 10px;
-    width: 100%;
-    background-color: #e0e0e0;
+    width: 0;
+    border-radius: 5px;
+    transition: width 0.5s ease, background-color 0.5s ease;
     margin-top: 5px;
-    transition: background-color 0.5s ease;
-  }
-  .strength-bar.weak {
-    background-color: red;
-  }
-  .strength-bar.medium {
-    background-color: yellow;
-  }
-  .strength-bar.strong {
-    background-color: green;
-  }
+}

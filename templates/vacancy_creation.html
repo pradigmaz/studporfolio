@@ -1,0 +1,65 @@
+   {% extends "base_employer.html" %} 
+
+   {% block content %}
+       <div class="container mt-5 mb-5" style="max-width: 800px">
+           <h1 class="text-center mb-4">Создать вакансию</h1>
+           <form method="POST" action="{{ url_for('vacancy.create_vacancy') }}">
+               {{ form.hidden_tag() }}
+               <div class="mb-3">
+                   <label class="form-label" for="title">
+                       <i class="bi bi-pencil"></i> {{ form.title.label.text }}
+                   </label>
+                   {{ form.title(class="form-control", id="title") }}
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="description">
+                       <i class="bi bi-card-text"></i> {{ form.description.label.text }}
+                   </label>
+                   {{ form.description(class="form-control", id="description") }}
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="employment_type">
+                       <i class="bi bi-briefcase"></i> {{ form.employment_type.label.text }}
+                   </label>
+                   <div class="w-auto">
+                       {{ form.employment_type(class="form-control", id="employment_type") }}
+                   </div>
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="responsibilities">
+                       <i class="bi bi-list-task"></i> {{ form.responsibilities.label.text }}
+                   </label>
+                   {{ form.responsibilities(class="form-control", id="responsibilities") }}
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="requirements">
+                       <i class="bi bi-file-earmark-text"></i> {{ form.requirements.label.text }}
+                   </label>
+                   {{ form.requirements(class="form-control", id="requirements") }}
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="conditions">
+                       <i class="bi bi-building"></i> {{ form.conditions.label.text }}
+                   </label>
+                   {{ form.conditions(class="form-control", id="conditions") }}
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="key_skills">
+                       <i class="bi bi-lightbulb"></i> {{ form.key_skills.label.text }}
+                   </label>
+                   {{ form.key_skills(class="form-control", id="key_skills") }}  
+               </div>
+               <div class="mb-3">
+                   <label class="form-label" for="specialty">
+                       <i class="bi bi-award"></i> {{ form.specialty.label.text }}
+                   </label>
+                   <div class="w-auto">
+                       {{ form.specialty(class="form-control", id="specialty") }}
+                   </div>
+               </div>
+               <button type="submit" class="btn btn-primary">
+                   <i class="bi bi-save"></i> Создать
+               </button>
+           </form>
+       </div>
+   {% endblock %}

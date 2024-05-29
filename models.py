@@ -1,6 +1,9 @@
+import os
+from flask import current_app, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from enum import Enum
 
 db = SQLAlchemy()
@@ -19,7 +22,9 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum(RoleEnum), nullable=False)
     phone = db.Column(db.String(20), nullable=True)
     about = db.Column(db.Text, nullable=True)
-    avatar_url = db.Column(db.String(255), nullable=True)
+    avatar = db.Column(db.String(255), nullable=True)
+    employer = db.relationship('Employer', backref='user', uselist=False)
+    student = db.relationship('Student', backref='user', uselist=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -27,41 +32,86 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def avatar_path(self):
+        if self.role == RoleEnum.STUDENT:
+            return os.path.join(current_app.root_path, 'data', 'students', str(self.student.id), 'avatars')
+        elif self.role == RoleEnum.EMPLOYER:
+            return os.path.join(current_app.root_path, 'data', 'employers', str(self.employer.id), 'avatars')
+
+    def save_avatar(self, avatar):
+        avatar_path = self.avatar_path()
+        os.makedirs(avatar_path, exist_ok=True)
+        filename = secure_filename(avatar.filename)
+        avatar.save(os.path.join(avatar_path, filename))
+        self.avatar = filename
+
+    def avatar_url(self):
+        if self.avatar:
+            return url_for('static', filename=f'data/{self.role.value}s/{self.id}/avatars/{self.avatar}')
+        return url_for('static', filename='default_avatar.png')
+
+    def nickname(self):
+        if self.role == RoleEnum.STUDENT:
+            return self.student.username
+        elif self.role == RoleEnum.EMPLOYER:
+            return self.employer.company_name
+        return self.email
+
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), unique=True, nullable=False)
     username = db.Column(db.String(100), unique=True, nullable=False)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     middle_name = db.Column(db.String(100), nullable=True)
-    projects = db.relationship('Project', backref='student', lazy=True, cascade="all, delete-orphan")
-    applications = db.relationship('Application', backref='student', lazy=True, cascade="all, delete-orphan")
+    projects = db.relationship(
+        'Project', backref='student', lazy=True, cascade="all, delete-orphan")
+    applications = db.relationship(
+        'Application', backref='student', lazy=True, cascade="all, delete-orphan")
+
 
 class Employer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id', ondelete='CASCADE'), unique=True, nullable=False)
     company_name = db.Column(db.String(100), nullable=False)
-    vacancies = db.relationship('Vacancy', backref='employer', lazy=True, cascade="all, delete-orphan")
+    vacancies = db.relationship(
+        'Vacancy', backref='employer', lazy=True, cascade="all, delete-orphan")
+
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete='CASCADE'), nullable=False)
+    file_path = db.Column(db.String(255), nullable=True)
+    student_id = db.Column(db.Integer, db.ForeignKey(
+        'student.id', ondelete='CASCADE'), nullable=False)
 
 
 class Vacancy(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    employer_id = db.Column(db.Integer, db.ForeignKey('employer.id', ondelete='CASCADE'), nullable=False)
-    applications = db.relationship('Application', backref='vacancy', lazy=True, cascade="all, delete-orphan")
+    employer_id = db.Column(db.Integer, db.ForeignKey(
+        'employer.id', ondelete='CASCADE'), nullable=False)
+    applications = db.relationship(
+        'Application', backref='vacancy', lazy=True, cascade="all, delete-orphan")
+    employment_type = db.Column(db.String(50), nullable=False)
+    responsibilities = db.Column(db.Text, nullable=False)
+    requirements = db.Column(db.Text, nullable=False)
+    conditions = db.Column(db.Text, nullable=False)
+    key_skills = db.Column(db.Text, nullable=True)
+    specialty = db.Column(db.String(100), nullable=False)
 
 
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete='CASCADE'), nullable=False)
-    vacancy_id = db.Column(db.Integer, db.ForeignKey('vacancy.id', ondelete='CASCADE'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey(
+        'student.id', ondelete='CASCADE'), nullable=False)
+    vacancy_id = db.Column(db.Integer, db.ForeignKey(
+        'vacancy.id', ondelete='CASCADE'), nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pending')
-    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+    created_at = db.Column(db.DateTime, nullable=False,
+                           default=db.func.current_timestamp())

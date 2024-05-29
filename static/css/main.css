@@ -148,5 +148,23 @@ footer {
 }
 
 /* ПАРОЛЬ */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
-/* Add this CSS for the meter */
+.input-group .form-control {
+  padding-right: 2.5rem;
+}
+
+.input-group .btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: none;
+  background: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}

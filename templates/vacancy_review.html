@@ -1,0 +1,17 @@
+{% extends "base_employer.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ vacancy.title }}</h2>
+    <p>{{ vacancy.description }}</p>
+    <p><strong>Тип занятости:</strong> {{ vacancy.employment_type }}</p>
+    <p><strong>Обязанности:</strong> {{ vacancy.responsibilities }}</p>
+    <p><strong>Требования:</strong> {{ vacancy.requirements }}</p>
+    <p><strong>Условия работы:</strong> {{ vacancy.conditions }}</p>
+    <p><strong>Ключевые навыки:</strong> {{ vacancy.key_skills }}</p>
+    <p><strong>Сфера деятельности:</strong> {{ vacancy.specialty }}</p>
+    <form action="{{ url_for('application.apply', vacancy_id=vacancy.id) }}" method="POST">
+        <button type="submit" class="btn btn-primary">Откликнуться</button>
+    </form>
+</div>
+{% endblock %}
