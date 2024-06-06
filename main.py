@@ -1,7 +1,7 @@
 from flask import Flask
+from routes import auth_bp, project_bp, vacancy_bp, filters_bp, application_bp, main_bp, profile_bp, settings_bp, search_bp
 from config import Config
 from models import db, User, Student, Employer, RoleEnum
-from routes import auth_bp, project_bp, vacancy_bp, filters_bp, application_bp
 from flask_login import LoginManager
 import logging
 from werkzeug.serving import WSGIRequestHandler
@@ -23,12 +23,20 @@ login_manager.login_view = 'auth.login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.context_processor
+def inject_role_enum():
+    return dict(RoleEnum=RoleEnum)
 
+
+app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(profile_bp)
+app.register_blueprint(settings_bp)
 app.register_blueprint(project_bp)
 app.register_blueprint(vacancy_bp)
 app.register_blueprint(filters_bp)
 app.register_blueprint(application_bp)
+app.register_blueprint(search_bp)
 
 class UTF8RequestHandler(WSGIRequestHandler):
     def send_response(self, code, message=None):

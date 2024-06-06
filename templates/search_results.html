@@ -1,0 +1,38 @@
+{% if students %}
+    <h4>Студенты</h4>
+    <div class="list-group mb-3">
+        {% for student in students %}
+        <a href="{{ url_for('search.view_student', username=student.username) }}" class="list-group-item list-group-item-action">
+                {{ student.first_name }} {{ student.last_name }}
+            </a>
+        {% endfor %}
+    </div>
+{% elif category == 'students' %}
+    <p>Ничего не найдено среди студентов</p>
+{% endif %}
+
+{% if employers %}
+    <h4>Работодатели</h4>
+    <div class="list-group mb-3">
+        {% for employer in employers %}
+            <a href="{{ url_for('search.view_employer', company_name=employer.company_name) }}" class="list-group-item list-group-item-action">
+                {{ employer.company_name }}
+            </a>
+        {% endfor %}
+    </div>
+{% elif category == 'employers' %}
+    <p>Ничего не найдено среди работодателей</p>
+{% endif %}
+
+{% if vacancies %}
+    <h4>Вакансии</h4>
+    <div class="list-group mb-3">
+        {% for vacancy in vacancies %}
+        <a href="{{ url_for('search.view_vacancy', vacancy_id=vacancy.id) }}" class="list-group-item list-group-item-action">
+                {{ vacancy.title }}
+            </a>
+        {% endfor %}
+    </div>
+{% elif category == 'vacancies' %}
+    <p>Ничего не найдено среди данной специальности</p>
+{% endif %}

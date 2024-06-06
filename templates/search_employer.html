@@ -1,4 +1,8 @@
-{% extends "base_employer.html" %}
+{% if role == RoleEnum.STUDENT %}
+    {% extends "base_student.html" %}
+{% elif role == RoleEnum.EMPLOYER %}
+    {% extends "base_employer.html" %}
+{% endif %}
 
 {% block content %}
 <div class="container mt-5">
@@ -6,17 +10,19 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="250" height="250">
-                    <h5 class="card-title">{{ current_user.company_name }}</h5>
-                    <p class="card-text">{{ current_user.contact_name }}</p>
+                    <img src="{{ employer.user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="250" height="250">
+                    <h5 class="card-title">{{ employer.company_name }}</h5>
+                    <p class="card-text">{{ employer.contact_name }}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>Email:</strong> {{ current_user.email }}</li>
-                    <li class="list-group-item"><strong>Телефон:</strong> {{ current_user.phone_number }}</li>
+                    <li class="list-group-item"><strong>Email:</strong> {{ employer.user.email }}</li>
+                    <li class="list-group-item"><strong>Телефон:</strong> {{ employer.user.phone_number }}</li>
                 </ul>
+                {% if current_user.is_authenticated and current_user.id == employer.user_id %}
                 <div class="card-body text-center">
-                    <a href="#" class="btn btn-secondary">Настройки</a>
+                    <a href="{{ url_for('settings.employer_settings', company_name=employer.company_name) }}" class="btn btn-secondary">Настройки</a>
                 </div>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-9">
@@ -30,15 +36,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for vacancy in current_user.employer.vacancies %}
+                    {% for vacancy in employer.vacancies %}
                     <tr>
                         <td>{{ vacancy.title }}</td>
                         <td>{{ vacancy.description }}</td>
                         <td>
+                            <a href="{{ url_for('vacancy.view_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-info btn-sm">Посмотреть</a>
+                            {% if current_user.is_authenticated and current_user.id == employer.user_id %}
                             <a href="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-primary btn-sm">Редактировать</a>
                             <form action="{{ url_for('vacancy.delete_vacancy', vacancy_id=vacancy.id) }}" method="POST" style="display:inline;">
                                 <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                             </form>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

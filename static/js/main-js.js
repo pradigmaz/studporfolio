@@ -1,17 +1,3 @@
-// main.html
-// Скрипт для анимации навбара
-
-document.addEventListener("DOMContentLoaded", function(){
-  const navbar = document.querySelector('.navbar');
-  window.onscroll = function() {
-    if (window.pageYOffset > 100) {
-      navbar.classList.add('navbar-shrink');
-    } else {
-      navbar.classList.remove('navbar-shrink');
-    }
-  };
-});
-
 // base_index.html
 // скрипт для валидации и форматирования ввода номера телефона
 document.addEventListener('DOMContentLoaded', function() {
@@ -64,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
+// скрипт для скрытия и показа пароля
 document.addEventListener("DOMContentLoaded", function () {
   const togglePasswordButtons = document.querySelectorAll(".toggle-password");
   togglePasswordButtons.forEach((button) => {
@@ -83,5 +69,27 @@ document.addEventListener("DOMContentLoaded", function () {
         icon.classList.add("bi-eye");
       }
     });
+  });
+});
+
+// скрипт для валидации форм
+$(document).ready(function() {
+  $('#loginForm').on('submit', function(event) {
+    event.preventDefault();
+    var form = $(this);
+    if (form.parsley().isValid()) {
+      $.ajax({
+        type: 'POST',
+        url: form.attr('action'),
+        data: form.serialize(),
+        success: function(response) {
+          if ($(response).find('#error-message').length) {
+            $('#error-message').show();
+          } else {
+            window.location.href = response;
+          }
+        }
+      });
+    }
   });
 });

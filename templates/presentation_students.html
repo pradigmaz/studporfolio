@@ -1,23 +1,25 @@
 {% extends "base_index.html" %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 shadow-lg">
+<div class="p-5 mb-4 bg-dark text-light rounded-3 shadow-lg mt-5">
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold text-primary">Для студентов</h1>
         <p class="fs-4 text-secondary">Постройте своё портфолио и открывайте новые возможности для карьеры</p>
         <p class="text-muted">Мы предлагаем студентам платформу для создания и демонстрации своего профессионального портфолио. Это ваш шанс показать свои проекты, достижения и навыки потенциальным работодателям.</p>
         <h2 class="mt-4 text-info">Возможности, доступные сейчас:</h2>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Загрузка проектов:</strong> Вы можете загружать свои проекты, которые будут видны в вашем профиле.</li>
+        <ul class="list-group list-group-flush bg-dark">
+            <li class="list-group-item bg-dark text-light"><strong>Загрузка проектов:</strong> Вы можете загружать свои проекты, которые будут видны в вашем профиле.</li>
         </ul>
         <h2 class="mt-4 text-info">Возможности, над которыми мы работаем:</h2>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Поиск вакансий:</strong> Просматривайте и откликайтесь на вакансии, опубликованные работодателями.</li>
-            <li class="list-group-item"><strong>Сетевое взаимодействие:</strong> Возможность связываться с другими студентами и профессионалами в вашей области.</li>
-            <li class="list-group-item"><strong>Отслеживание успехов:</strong> Получайте обратную связь и рекомендации от преподавателей и работодателей.</li>
+        <ul class="list-group list-group-flush bg-dark">
+            <li class="list-group-item bg-dark text-light"><strong>Поиск вакансий:</strong> Просматривайте и откликайтесь на вакансии, опубликованные работодателями.</li>
+            <li class="list-group-item bg-dark text-light"><strong>Сетевое взаимодействие:</strong> Возможность связываться с другими студентами и профессионалами в вашей области.</li>
+            <li class="list-group-item bg-dark text-light"><strong>Отслеживание успехов:</strong> Получайте обратную связь и рекомендации от преподавателей и работодателей.</li>
         </ul>
         <p class="lead">Мы стремимся предоставить вам все необходимые инструменты для успешного построения карьеры. Следите за обновлениями!</p>
-        <a href="#" class="register-btn-student" data-bs-toggle="modal" data-bs-target="#registerModalStudent">Регистрация</a>
+        <div class="d-flex justify-content-center">
+            <a href="#" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#registerModalStudent">Регистрация</a>
+        </div>
     </div>
 </div>
 {% endblock %}

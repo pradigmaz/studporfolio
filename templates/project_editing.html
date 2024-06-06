@@ -1,33 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Project</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Edit Project</h1>
-      <form method="POST" enctype="multipart/form-data">
+{% extends "base_student.html" %} 
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4 text-light"><i class="bi bi-pencil-square"></i> Редактировать проект</h1>
+  
+  <div class="card text-white">
+    <div class="card-body bg-dark">
+      <form method="POST" enctype="multipart/form-data" id="edit-project-form" class="needs-validation" novalidate>
         {{ form.hidden_tag() }}
-        <div class="form-group">
-          {{ form.title.label(class="form-label") }} {{
-          form.title(class="form-control") }}
+        
+        <div class="mb-3">
+          {{ form.title.label(class="form-label text-light") }}
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-white"><i class="bi bi-card-text"></i></span>
+            {{ form.title(class="form-control bg-secondary text-white", required=True) }}
+          </div>
         </div>
-        <div class="form-group">
-          {{ form.description.label(class="form-label") }} {{
-          form.description(class="form-control") }}
+        
+        <div class="mb-3">
+          {{ form.description.label(class="form-label text-light") }}
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-white"><i class="bi bi-file-earmark-text"></i></span>
+            {{ form.description(class="form-control bg-secondary text-white", rows="3", required=True) }}
+          </div>
         </div>
-        <div class="form-group">
-          {{ form.file.label(class="form-label") }} {{
-          form.file(class="form-control") }}
+        
+        <div class="mb-3">
+          {{ form.category.label(class="form-label text-light") }}
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-white"><i class="bi bi-tags"></i></span>
+            {{ form.category(class="form-select bg-secondary text-white", required=True) }}
+          </div>
         </div>
-        <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+        
+        <div class="mb-3">
+          {{ form.repository_url.label(class="form-label text-light") }}
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-white"><i class="bi bi-link-45deg"></i></span>
+            {{ form.repository_url(class="form-control bg-secondary text-white", required=True) }}
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          {{ form.add_new_files.label(class="form-label text-light") }}
+          <div class="input-group">
+            <span class="input-group-text bg-secondary text-white"><i class="bi bi-upload"></i></span>
+            {{ form.add_new_files(class="form-control bg-secondary text-white", multiple=True, required=False) }}
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label text-light"><i class="bi bi-trash"></i> Удалить уже имеющиеся файлы</label>
+          <div class="form-check">
+            {% for file in project.files %}
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="delete_files" value="{{ file.id }}" id="delete_file_{{ file.id }}">
+                <label class="form-check-label text-white" for="delete_file_{{ file.id }}">
+                  {{ file.file_path.split('/')[-1] }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Сохранить</button>
+          <button type="button" class="btn btn-outline-light"><i class="bi bi-x-circle"></i> Отмена</button>
+          <button type="submit" name="delete_selected" class="btn btn-danger"><i class="bi bi-trash"></i> Удалить выбранные файлы</button>
+          <button type="submit" class="btn btn-success"><i class="bi bi-upload"></i> Загрузить файлы</button>
+        </div>
+        
       </form>
     </div>
-  </body>
-</html>
+  </div>
+</div>
+{% endblock %}

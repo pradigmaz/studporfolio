@@ -1,0 +1,55 @@
+{% if role == RoleEnum.STUDENT %}
+    {% extends "base_student.html" %}
+{% elif role == RoleEnum.EMPLOYER %}
+    {% extends "base_employer.html" %}
+{% endif %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Поиск</h3>
+            <form id="searchForm" method="get" action="{{ url_for('search.search_all') }}">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="1" id="toggleSearch" name="toggle_search">
+                    <label class="form-check-label" for="toggleSearch">
+                        Показать поисковую строку
+                    </label>
+                </div>
+                <div id="searchInputGroup" class="input-group mb-3" style="display: none;">
+                    <input type="text" class="form-control w-100" name="query" placeholder="Введите запрос...">
+                    <button class="btn btn-primary" type="submit">Поиск</button>
+                </div>
+                <div class="mb-3">
+                    <label for="searchCategory" class="form-label">Категория</label>
+                    <select class="form-select w-100" id="searchCategory" name="category" onchange="resetSpecialty()">
+                        <option value="">Все категории</option>
+                        <option value="students">Студенты</option>
+                        <option value="employers">Работодатели</option>
+                        <option value="vacancies">Вакансии</option>
+                    </select>
+                </div>
+                <div id="specialtyGroup" class="mb-3" style="display: none;">
+                    <label for="specialty" class="form-label">Специальность (для вакансий)</label>
+                    <select class="form-select w-100" id="specialty" name="specialty">
+                        {% for value, label in specialties %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-primary w-100" type="submit">Применить фильтры</button>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <h3>Результаты поиска</h3>
+            <div id="searchResults">
+                {% if students or employers or vacancies %}
+                    {% include 'search_results.html' %}
+                {% else %}
+                    <p>Пожалуйста, используйте форму поиска для отображения результатов.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,12 +2,12 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Настройки профиля работодателя</h2>
+  <h2 class="text-center mb-4">Настройки профиля студента</h2>
   <div class="row">
     <div class="col-md-3">
       <div class="list-group" id="settingsTab" role="tablist">
-        <a class="list-group-item list-group-item-action active" id="avatar-tab" data-bs-toggle="list" href="#avatar" role="tab" aria-controls="avatar">
-          <i class="bi bi-person-circle"></i> Аватар
+        <a class="list-group-item list-group-item-action active" id="profile-tab" data-bs-toggle="list" href="#profile" role="tab" aria-controls="profile">
+          <i class="bi bi-person"></i> Профиль
         </a>
         <a class="list-group-item list-group-item-action" id="email-tab" data-bs-toggle="list" href="#email" role="tab" aria-controls="email">
           <i class="bi bi-envelope"></i> Электронная почта
@@ -19,21 +19,46 @@
     </div>
     <div class="col-md-6">
       <div class="tab-content" id="settingsTabContent">
-        <div class="tab-pane fade show active" id="avatar" role="tabpanel" aria-labelledby="avatar-tab">
-          <form method="POST" enctype="multipart/form-data">
-            {{ avatar_form.hidden_tag() }}
+        <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <form method="POST">
+            {{ form.hidden_tag() }}
             <div class="mb-3">
-              <label for="avatar" class="form-label">Аватар:</label>
-              {{ avatar_form.avatar(class="form-control") }}
+              <label for="first_name" class="form-label">Имя:</label>
+              {{ form.first_name(class="form-control") }}
             </div>
-            <button type="submit" class="btn btn-primary">Обновить</button>
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Фамилия:</label>
+              {{ form.last_name(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              <label for="middle_name" class="form-label">Отчество:</label>
+              {{ form.middle_name(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Телефон:</label>
+              {{ form.phone(class="form-control", placeholder="+7 (___)-___-__-__")  }}
+            </div>
+            <div class="mb-3">
+              <label for="about" class="form-label">О себе:</label>
+              {{ form.about(class="form-control", rows="4") }}
+            </div>
+            <div class="mb-3">
+              <label for="university" class="form-label">Университет:</label>
+              {{ form.university(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
           </form>
         </div>
         <div class="tab-pane fade" id="email" role="tabpanel" aria-labelledby="email-tab">
-          <form method="POST">
+          <h4>Изменить электронную почту</h4>
+          <form method="post" action="{{ url_for('settings.student_settings', username=current_user.username) }}">
             {{ email_form.hidden_tag() }}
             <div class="mb-3">
-              <label for="email" class="form-label">Электронная почта:</label>
+              <label for="current_email" class="form-label">Текущая электронная почта:</label>
+              {{ email_form.current_email(class="form-control", value=current_user.email) }}
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Новая электронная почта:</label>
               {{ email_form.email(class="form-control") }}
             </div>
             <button type="submit" class="btn btn-primary">Обновить</button>
@@ -44,15 +69,31 @@
             {{ password_form.hidden_tag() }}
             <div class="mb-3">
               <label for="current_password" class="form-label">Текущий пароль:</label>
-              {{ password_form.current_password(class="form-control") }}
+              <div class="input-group">
+                {{ password_form.current_password(class="form-control", id="current_password") }}
+                <button type="button" class="btn btn-sm toggle-password" data-target="current_password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
             </div>
             <div class="mb-3">
               <label for="new_password" class="form-label">Новый пароль:</label>
-              {{ password_form.new_password(class="form-control") }}
+              <div class="input-group">  
+                {{ password_form.new_password(class="form-control", id="new_password") }}
+                <button type="button" class="btn btn-sm toggle-password" data-target="new_password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>
+              <div class="strengthMeter" id="new_password_strength_meter"></div>
             </div>
             <div class="mb-3">
               <label for="confirm_new_password" class="form-label">Подтвердите новый пароль:</label>
-              {{ password_form.confirm_new_password(class="form-control") }}
+              <div class="input-group">
+                {{ password_form.confirm_new_password(class="form-control", id="confirm_new_password") }}
+                <button type="button" class="btn btn-sm toggle-password" data-target="confirm_new_password">
+                  <i class="bi bi-eye"></i>
+                </button>
+              </div>  
             </div>
             <button type="submit" class="btn btn-primary">Обновить</button>
           </form>
