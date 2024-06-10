@@ -27,7 +27,6 @@ def load_user(user_id):
 def inject_role_enum():
     return dict(RoleEnum=RoleEnum)
 
-
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(profile_bp)

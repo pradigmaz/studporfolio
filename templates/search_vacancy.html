@@ -8,19 +8,29 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2>{{ vacancy.title }}</h2>
+                </div>
                 <div class="card-body">
-                    <h3 class="card-title">{{ vacancy.title }}</h3>
-                    <p class="card-text"><strong>Описание:</strong> {{ vacancy.description }}</p>
-                    <p class="card-text"><strong>Тип занятости:</strong> {{ vacancy.employment_type }}</p>
-                    <p class="card-text"><strong>Обязанности:</strong> {{ vacancy.responsibilities }}</p>
-                    <p class="card-text"><strong>Требования:</strong> {{ vacancy.requirements }}</p>
-                    <p class="card-text"><strong>Условия работы:</strong> {{ vacancy.conditions }}</p>
-                    <p class="card-text"><strong>Ключевые навыки:</strong> {{ vacancy.key_skills }}</p>
-                    <p class="card-text"><strong>Сфера деятельности:</strong> {{ vacancy.specialty }}</p>
+                    <p class="lead"><strong>Описание:</strong></p>
+                    <p class="card-text">{{ vacancy.description }}</p>
+
+                    <hr>
+
+                    <p class="lead"><strong>Детали вакансии:</strong></p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Тип занятости:</strong> {{ vacancy.employment_type }}</li>
+                        <li class="list-group-item"><strong>Обязанности:</strong> {{ vacancy.responsibilities }}</li>
+                        <li class="list-group-item"><strong>Требования:</strong> {{ vacancy.requirements }}</li>
+                        <li class="list-group-item"><strong>Условия работы:</strong> {{ vacancy.conditions }}</li>
+                        <li class="list-group-item"><strong>Ключевые навыки:</strong> {{ vacancy.key_skills }}</li>
+                        <li class="list-group-item"><strong>Сфера деятельности:</strong> {{ vacancy.specialty }}</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="mb-5"></div>
 {% endblock %}

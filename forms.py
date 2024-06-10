@@ -91,7 +91,6 @@ class VacancyForm(FlaskForm):
     conditions = TextAreaField('Условия работы', validators=[DataRequired()])
     key_skills = TextAreaField('Ключевые навыки', validators=[DataRequired()])
     specialty = SelectField('Сфера деятельности', choices=[
-        ('', 'Все специальности'),
         ('automotive', 'Автомобильный бизнес'),
         ('administrative', 'Административный персонал'),
         ('security', 'Безопасность'),
@@ -109,7 +108,6 @@ class VacancyForm(FlaskForm):
         ('hr', 'Управление персоналом, тренинги'),
         ('finance', 'Финансы, бухгалтерия'),
         ('legal', 'Юристы'),
-        ('other', 'Другое')
     ], validators=[Optional()])
     submit = SubmitField('Создать вакансию')
 
