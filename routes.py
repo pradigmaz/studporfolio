@@ -371,20 +371,19 @@ def edit_vacancy(vacancy_id):
 def view_vacancy(vacancy_id):
     vacancy = Vacancy.query.get_or_404(vacancy_id)
     role = current_user.role if current_user.is_authenticated else None
-    return render_template('vacancy_review.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum)
+    return render_template('search_vacancy.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum)
 
 # ПУТИ ОТКЛИКОВ
 
 @application_bp.route('/apply/<int:vacancy_id>', methods=['POST'])
 @login_required
 def apply(vacancy_id):
-    form = ApplicationForm()
-    if form.validate_on_submit():
-        application = Application(
-            student_id=current_user.student.id, vacancy_id=vacancy_id)
-        db.session.add(application)
-        db.session.commit()
-        return redirect(url_for('vacancy.view_vacancy', vacancy_id=vacancy_id))
+    if current_user.role != RoleEnum.STUDENT:
+        return redirect(url_for('main.index'))
+    
+    application = Application(student_id=current_user.student.id, vacancy_id=vacancy_id)
+    db.session.add(application)
+    db.session.commit()
     return redirect(url_for('vacancy.view_vacancy', vacancy_id=vacancy_id))
 
 # ПУТИ ПОИСКА
@@ -482,7 +481,9 @@ def search_vacancies():
 def view_vacancy(vacancy_id):
     vacancy = Vacancy.query.get_or_404(vacancy_id)
     role = current_user.role if current_user.is_authenticated else None
-    return render_template('search_vacancy.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum)
+    applicants = vacancy.get_applicants() if role == RoleEnum.EMPLOYER and current_user.employer.id == vacancy.employer_id else []
+    is_applied = vacancy.is_applied_by_student(current_user.student.id) if role == RoleEnum.STUDENT else False
+    return render_template('search_vacancy.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum, applicants=applicants, is_applied=is_applied)
 
 @search_bp.route('/search/view_profiles/students/<username>')
 @login_required

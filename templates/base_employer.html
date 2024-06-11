@@ -36,8 +36,10 @@
             {% endif %}
           </ul>
           <form action="{{ url_for('search.search_all') }}" method="get" class="d-flex">
-            <button class="btn btn-outline-light" type="submit">Поиск</button>
-          </form>
+            <button class="btn btn-outline-light w-100" type="submit">
+                <i class="bi bi-search"></i> Поиск
+            </button>
+        </form>
           <div class="ms-auto"></div>
           {% if current_user.is_authenticated %}
           <ul class="navbar-nav">

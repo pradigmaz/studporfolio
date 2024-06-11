@@ -1,8 +1,8 @@
 {% extends "base_student.html" %} 
 
 {% block content %}
-<div class="container mt-4">
-  <h1 class="mb-4 text-light"><i class="bi bi-pencil-square"></i> Редактировать проект</h1>
+<div class="container mt-4 mb-4">
+  <h1 class="mb-4 text-dark"><i class="bi bi-pencil-square"></i> Редактировать проект</h1>
   
   <div class="card text-white">
     <div class="card-body bg-dark">
@@ -33,7 +33,7 @@
           </div>
         </div>
         
-        <div class="mb-3">
+        <div class="mb-3" id="repository_url_group" style="display: none;">
           {{ form.repository_url.label(class="form-label text-light") }}
           <div class="input-group">
             <span class="input-group-text bg-secondary text-white"><i class="bi bi-link-45deg"></i></span>
@@ -74,4 +74,22 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const categoryField = document.querySelector('#{{ form.category.id }}');
+    const repositoryUrlGroup = document.getElementById('repository_url_group');
+
+    function toggleRepositoryUrlField() {
+      if (categoryField.value === 'it') {
+        repositoryUrlGroup.style.display = 'block';
+      } else {
+        repositoryUrlGroup.style.display = 'none';
+      }
+    }
+
+    categoryField.addEventListener('change', toggleRepositoryUrlField);
+    toggleRepositoryUrlField();  // Initial check
+  });
+</script>
 {% endblock %}

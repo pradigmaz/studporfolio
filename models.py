@@ -89,6 +89,15 @@ class Vacancy(db.Model):
     key_skills = db.Column(db.Text, nullable=True)
     specialty = db.Column(db.String(100), nullable=False)
 
+    def get_application_count(self):
+        return len(self.applications)
+
+    def get_applicants(self):
+        return [application.student for application in self.applications]
+
+    def is_applied_by_student(self, student_id):
+        return Application.query.filter_by(student_id=student_id, vacancy_id=self.id).first() is not None
+
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id', ondelete='CASCADE'), nullable=False)

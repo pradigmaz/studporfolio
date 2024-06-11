@@ -1,37 +1,40 @@
 {% extends "base_student.html" %} 
 
 {% block content %}
-    <div class="container">
-      <h1>Создать проект</h1>
+    <div class="container py-5">
+      <h1 class="mb-4"><i class="bi bi-folder-plus"></i> Создать проект</h1>
       <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <div class="form-group">
-          {{ form.title.label(class="form-label") }} {{
-          form.title(class="form-control") }}
+        <div class="form-group mb-3">
+          <label for="{{ form.title.id }}" class="form-label"><i class="bi bi-card-heading"></i> {{ form.title.label.text }}</label>
+          {{ form.title(class="form-control") }}
         </div>
-        <div class="form-group">
-          {{ form.description.label(class="form-label") }} {{
-          form.description(class="form-control") }}
+        <div class="form-group mb-3">
+          <label for="{{ form.description.id }}" class="form-label"><i class="bi bi-text-left"></i> {{ form.description.label.text }}</label>
+          {{ form.description(class="form-control") }}
         </div>
-        <div class="form-group">
-          {{ form.category.label(class="form-label") }} {{
-          form.category(class="form-control") }}
+        <div class="form-group mb-3">
+          <label for="{{ form.category.id }}" class="form-label"><i class="bi bi-tags"></i> {{ form.category.label.text }}</label>
+          {{ form.category(class="form-control") }}
         </div>
-        <div class="form-group" id="repository_url_group" style="display: none;">
-          {{ form.repository_url.label(class="form-label") }}
+        <div class="form-group mb-3" id="repository_url_group" style="display: none;">
+          <label for="{{ form.repository_url.id }}" class="form-label"><i class="bi bi-link-45deg"></i> {{ form.repository_url.label.text }}</label>
           <div class="input-group">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon3">URL репозитория:</span>
+              <span class="input-group-text" id="basic-addon3"><i class="bi bi-link-45deg"></i> URL репозитория:</span>
             </div>
             {{ form.repository_url(class="form-control") }}
           </div>
         </div>
-        <div class="form-group">
-          {{ form.file.label(class="form-label") }} {{
-          form.file(class="form-control") }}
+        <div class="form-group mb-3">
+          <label for="{{ form.file.id }}" class="form-label"><i class="bi bi-file-earmark"></i> {{ form.file.label.text }}</label>
+          {{ form.file(class="form-control") }}
         </div>
 
-        <div class="form-group">{{ form.submit(class="btn btn-primary") }}</div>
+        <div class="form-group mb-3">
+          {{ form.submit(class="btn btn-primary") }}
+          <i class="bi bi-check-circle ms-2"></i>
+        </div>
       </form>
     </div>
 {% endblock %}

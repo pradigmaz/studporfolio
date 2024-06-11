@@ -16,6 +16,18 @@
             <p><strong>Условия работы:</strong> {{ vacancy.conditions }}</p>
             <p><strong>Ключевые навыки:</strong> {{ vacancy.key_skills }}</p>
             <p><strong>Сфера деятельности:</strong> {{ vacancy.specialty }}</p>
+            {% if role == RoleEnum.EMPLOYER and current_user.employer.id == vacancy.employer_id %}
+                <h3>Отклики студентов</h3>
+                <ul>
+                    {% for application in applications %}
+                        <li>
+                            <a href="{{ url_for('profile.student_profile', username=application.student.username) }}">
+                                {{ application.student.first_name }} {{ application.student.last_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
     </div>
 </div>

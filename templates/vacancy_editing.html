@@ -1,8 +1,8 @@
 {% extends "base_employer.html" %} 
 
 {% block content %}
-    <div class="container">
-        <h1>Edit Vacancy</h1>
+    <div class="container py-5">
+        <h1>Редактирование вакансии</h1>
         <form method="POST" action="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}">
             {{ form.hidden_tag() }}
             <div class="form-group">
