@@ -55,6 +55,11 @@ def register_employer():
         return redirect(url_for('main.index'))
     form = RegistrationFormEmployer()
     if form.validate_on_submit():
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            logging.warning(f"Email {form.email.data} уже используется")
+            return render_template('index.html', student_form=RegistrationFormStudent(), employer_form=form, login_form=LoginForm(), form=form, RoleEnum=RoleEnum, error='Email уже используется')
+        
         user = User(email=form.email.data, role=RoleEnum.EMPLOYER)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -63,7 +68,7 @@ def register_employer():
             user_id=user.id, company_name=form.company_name.data)
         db.session.add(employer)
         db.session.commit()
-        user_folder = os.path.join(current_app.root_path, f'uploads/users/employers/{employer.company_name}')
+        user_folder = os.path.join(current_app.root_path, f'uploads/users/employers/{secure_filename(employer.company_name)}')
         os.makedirs(user_folder, exist_ok=True)
         login_user(user)
         logging.info(f"Employer {user.email} registered successfully")
