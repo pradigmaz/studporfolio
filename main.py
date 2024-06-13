@@ -71,4 +71,4 @@ if __name__ == '__main__':
 
         db.session.commit()
 
-    app.run(debug=True, use_reloader=True, request_handler=UTF8RequestHandler)
+    app.run(debug=True, use_reloader=True, request_handler=UTF8RequestHandler, host='0.0.0.0')
