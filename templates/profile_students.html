@@ -6,7 +6,7 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-body text-center">
-          <img src="{{ student.user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="150" height="150">
+          <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="150" height="150">
           <h4>{{ student.surname }} {{ student.first_name }} {{ student.middle_name }}</h4>
           {% if student == current_user %}
           <a href="{{ url_for('auth.settings') }}" class="btn btn-dark mt-2">Редактировать профиль</a>
@@ -38,9 +38,37 @@
                 <div class="card-body">
                   <h5 class="card-title">{{ project.title }}</h5>
                   <p class="card-text">{{ project.description }}</p>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">
+                    Посмотреть
+                  </button>
                 </div>
                 <div class="card-footer text-muted">
                   <small>Область: {{ project.field }}</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="projectModal{{ project.id }}" tabindex="-1" aria-labelledby="projectModalLabel{{ project.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="projectModalLabel{{ project.id }}">{{ project.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p><strong>Описание:</strong> {{ project.description }}</p>
+                    <p><strong>Область:</strong> {{ project.field }}</p>
+                    <p><strong>Файлы:</strong></p>
+                    <ul>
+                      {% for file in project.files %}
+                      <li><a href="{{ url_for('static', filename=file.filename) }}" target="_blank">{{ file.filename }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -118,7 +118,9 @@ class StudentSettingsForm(FlaskForm):
     middle_name = StringField('Отчество', validators=[Optional()])
     university = SelectField('Университет', choices=[], validators=[Optional()])
     phone = StringField('Телефон', validators=[Optional()])
-    about = TextAreaField('О себе', validators=[Optional(), Length(max=500)])  # Added this line
+    about = TextAreaField('О себе', validators=[Optional(), Length(max=500)])
+    avatar = FileField('Аватар', validators=[FileAllowed(['jpg', 'png'])])
+    delete_avatar = SubmitField('Удалить аватар')
     submit = SubmitField('Сохранить изменения')
     
     
@@ -127,6 +129,8 @@ class EmployerSettingsForm(FlaskForm):
     email = StringField('Электронная почта', validators=[Optional(), Email()])
     phone = StringField('Телефон', validators=[Optional()])
     about = TextAreaField('О компании', validators=[Optional()])
+    avatar = FileField('Аватар', validators=[FileAllowed(['jpg', 'png'])])
+    delete_avatar = SubmitField('Удалить аватар')
     submit = SubmitField('Сохранить изменения')
 
 class UpdatePasswordForm(FlaskForm):

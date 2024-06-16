@@ -20,7 +20,7 @@
     <div class="col-md-6">
       <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-          <form method="POST">
+          <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="mb-3">
               <label for="first_name" class="form-label">Имя:</label>
@@ -46,7 +46,14 @@
               <label for="university" class="form-label">Университет:</label>
               {{ form.university(class="form-control") }}
             </div>
-            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+            <div class="mb-3">
+              <label for="avatar" class="form-label">Аватар:</label>
+              {{ form.avatar(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.delete_avatar(class="btn btn-danger btn-sm") }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Сохранить изменения</button>
           </form>
         </div>
         <div class="tab-pane fade" id="email" role="tabpanel" aria-labelledby="email-tab">

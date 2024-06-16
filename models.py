@@ -19,6 +19,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum(RoleEnum), nullable=False)
     phone = db.Column(db.String(20), nullable=True)
     about = db.Column(db.Text, nullable=True)
+    avatar = db.Column(db.String(200), nullable=True)
     employer = db.relationship('Employer', backref='user', uselist=False)
     student = db.relationship('Student', backref='user', uselist=False)
 
@@ -36,6 +37,12 @@ class User(UserMixin, db.Model):
         return self.email
 
     def avatar_url(self):
+        if self.role == RoleEnum.STUDENT:
+            if self.student.avatar_path:
+                return url_for('static', filename=f'uploads/users/students/{self.student.username}/avatars/avatar.jpg')
+        elif self.role == RoleEnum.EMPLOYER:
+            if self.employer.avatar_path:
+                return url_for('static', filename=f'uploads/users/employers/{self.employer.company_name}/avatars/avatar.jpg')
         return url_for('static', filename='icons/default_avatar.jpg')
 
 class University(db.Model):
@@ -53,12 +60,14 @@ class Student(db.Model):
     birthdate = db.Column(db.Date, nullable=True)
     university_id = db.Column(db.Integer, db.ForeignKey('university.id'), nullable=True)
     projects = db.relationship('Project', backref='student', lazy=True, cascade="all, delete-orphan")
+    avatar_path = db.Column(db.String(200), nullable=True)
     applications = db.relationship('Application', backref='student', lazy=True, cascade="all, delete-orphan")
 
 class Employer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), unique=True, nullable=False)
     company_name = db.Column(db.String(100), nullable=False)
+    avatar_path = db.Column(db.String(200), nullable=True)  # Добавить это поле
     vacancies = db.relationship('Vacancy', backref='employer', lazy=True, cascade="all, delete-orphan")
 
 class ProjectFile(db.Model):

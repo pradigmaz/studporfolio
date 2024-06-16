@@ -20,7 +20,7 @@
     <div class="col-md-6">
       <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="company" role="tabpanel" aria-labelledby="company-tab">
-          <form method="POST">
+          <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="mb-3">
               <label for="company_name" class="form-label">Название компании:</label>
@@ -33,6 +33,13 @@
             <div class="mb-3">
               <label for="about" class="form-label">О компании:</label>
               {{ form.about(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              <label for="avatar" class="form-label">Аватар:</label>
+              {{ form.avatar(class="form-control") }}
+            </div>
+            <div class="mb-3">
+              {{ form.delete_avatar(class="btn btn-danger") }}
             </div>
             <button type="submit" class="btn btn-primary">Обновить</button>
           </form>

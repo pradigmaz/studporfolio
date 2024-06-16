@@ -156,6 +156,14 @@ def student_settings(username):
     password_form = UpdatePasswordForm()
     email_form = UpdateEmailForm(current_email=current_user.email)
 
+    if form.delete_avatar.data:
+        avatar_path = current_user.student.avatar_path
+        if avatar_path and os.path.exists(avatar_path):
+            os.remove(avatar_path)
+            current_user.student.avatar_path = None
+            db.session.commit()
+        return redirect(url_for('settings.student_settings', username=username))
+
     if form.validate_on_submit():
         current_user.student.first_name = form.first_name.data
         current_user.student.last_name = form.last_name.data
@@ -163,19 +171,13 @@ def student_settings(username):
         current_user.student.university_id = form.university.data
         current_user.phone = form.phone.data
         current_user.about = form.about.data
+        if form.avatar.data:
+            avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
+            os.makedirs(avatar_dir, exist_ok=True)
+            avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
+            form.avatar.data.save(avatar_path)
+            current_user.student.avatar_path = avatar_path
         db.session.commit()
-        return redirect(url_for('settings.student_settings', username=username))
-    
-    if password_form.validate_on_submit():
-        if current_user.check_password(password_form.current_password.data):
-            current_user.set_password(password_form.new_password.data)
-            db.session.commit()
-            return redirect(url_for('settings.student_settings', username=username))
-    
-    if email_form.validate_on_submit():
-        current_user.email = email_form.email.data
-        db.session.commit()
-        return redirect(url_for('settings.student_settings', username=username))
     
     return render_template('settings_students.html', form=form, password_form=password_form, email_form=email_form, RoleEnum=RoleEnum)
 
@@ -190,21 +192,24 @@ def employer_settings(company_name):
     password_form = UpdatePasswordForm()
     email_form = UpdateEmailForm(obj=current_user)
 
+    if form.delete_avatar.data:
+        avatar_path = current_user.employer.avatar_path
+        if avatar_path and os.path.exists(avatar_path):
+            os.remove(avatar_path)
+            current_user.employer.avatar_path = None
+            db.session.commit()
+        return redirect(url_for('settings.employer_settings', company_name=company_name))
+
     if form.validate_on_submit():
         current_user.employer.company_name = form.company_name.data
         current_user.phone = form.phone.data
         current_user.about = form.about.data
-        db.session.commit()
-        return redirect(url_for('settings.employer_settings', company_name=company_name))
-    
-    if password_form.validate_on_submit():
-        if current_user.check_password(password_form.current_password.data):
-            current_user.set_password(password_form.new_password.data)
-            db.session.commit()
-            return redirect(url_for('settings.employer_settings', company_name=company_name))
-    
-    if email_form.validate_on_submit():
-        current_user.email = email_form.email.data
+        if form.avatar.data:
+            avatar_dir = os.path.join('static', 'uploads', 'users', 'employers', company_name, 'avatars')
+            os.makedirs(avatar_dir, exist_ok=True)
+            avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
+            form.avatar.data.save(avatar_path)
+            current_user.employer.avatar_path = avatar_path
         db.session.commit()
         return redirect(url_for('settings.employer_settings', company_name=company_name))
     

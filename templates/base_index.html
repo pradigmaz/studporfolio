@@ -152,7 +152,6 @@
                       <i class="bi bi-eye"></i>
                     </button>
                   </div>
-                  <div class="strengthMeter"></div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label" for="confirm_password">
@@ -170,7 +169,7 @@
                 </div>
               </form>
               <div class="text-center mt-3">
-                <a href="#" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModalStudent" data-bs-dismiss="modal">
+                <a href="#" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#loginModalStudent" data-bs-dismiss="modal">
                   <i class="bi bi-box-arrow-in-right"></i> Есть аккаунт? Войти
                 </a>
               </div>
@@ -183,8 +182,8 @@
       <div class="modal fade" id="registerModalEmployer" tabindex="-1" aria-labelledby="registerModalEmployerLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-primary" id="registerModalEmployerLabel">
+            <div class="modal-header bg-info text-dark">
+              <h5 class="modal-title" id="registerModalEmployerLabel">
                 <i class="bi bi-person-plus"></i> Регистрация работодателя
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -220,7 +219,6 @@
                       <i class="bi bi-eye"></i>
                     </button>
                   </div>
-                  <div class="strengthMeter"></div>
                 </div>
                 <div class="mb-3">
                   <label class="form-label" for="confirm_password">
@@ -234,13 +232,14 @@
                   </div>
                 </div>
                 <div class="d-grid gap-2">
-                  {{ employer_form.submit(class="btn btn-primary btn-lg text-white bg-primary border-primary") }}
+                  {{ employer_form.submit(class="btn btn-info btn-lg text-dark bg-info border-info") }}
                 </div>
               </form>
               <div class="text-center mt-3">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#loginModalEmployer" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-outline-info text-dark" data-bs-toggle="modal" data-bs-target="#loginModalEmployer" data-bs-dismiss="modal">
                   <i class="bi bi-box-arrow-in-right"></i> Есть аккаунт? Войти
-                </a>
+                </button>
+              </div>
               </div>
             </div>
           </div>
@@ -294,8 +293,8 @@
       <div class="modal fade" id="loginModalEmployer" tabindex="-1" aria-labelledby="loginModalEmployerLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title text-primary" id="loginModalEmployerLabel">
+            <div class="modal-header bg-info text-dark">
+              <h5 class="modal-title" id="loginModalEmployerLabel">
                 <i class="bi bi-box-arrow-in-right"></i> Вход для работодателя
               </h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -325,7 +324,7 @@
                   <label class="form-check-label" for="remember">{{ login_form.remember.label.text }}</label>
                 </div>
                 <div class="d-grid gap-2">
-                  {{ login_form.submit(class="btn btn-primary btn-lg text-primary bg-white border-primary") }}
+                  {{ login_form.submit(class="btn btn-outline-info btn-lg text-dark bg-white border-info") }}
                 </div>
               </form>
             </div>
@@ -335,66 +334,71 @@
 
       {% block content %}{% endblock %}
 
-      <footer class="footer mt-auto w-100">
-        <div class="container">
-          <div class="row py-3">
-            <div class="col-md-6">
-              <h6>Разделы</h6>
-              <ul class="list-unstyled">
-                <li>
-                  <a href="#" class="text-decoration-none text-dark">
-                    <i class="bi bi-house-door"></i> Главная
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-decoration-none text-dark">
-                    <i class="bi bi-lightbulb"></i> Возможности
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-decoration-none text-dark">
-                    <i class="bi bi-currency-dollar"></i> Цены
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-decoration-none text-dark">
-                    <i class="bi bi-question-circle"></i> FAQ
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="text-decoration-none text-dark">
-                    <i class="bi bi-info-circle"></i> О нас
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h6>Подписка на новости</h6>
-              <form>
-                <div class="input-group mb-3">
-                  <input type="email" class="form-control" placeholder="Ваш email">
-                  <button class="btn btn-outline-dark" type="submit">
-                    <i class="bi bi-envelope"></i> Подписаться
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="row border-top pt-3">
-            <div class="col-md-6">
-              <p>© 2024 Company, Inc. Все права защищены.</p>
-            </div>
-            <div class="col-md-6 text-end">
-              <a href="https://t.me/belkaratarosk" class="text-dark me-3" target="_blank">
-                <i class="bi bi-telegram fs-4"></i>
-              </a>
-              <a href="https://github.com/pradigmaz/studporfolio" class="text-dark" target="_blank">
-                <i class="bi bi-github fs-4"></i>
-              </a>
-            </div>
-          </div>
+      <body class="d-flex flex-column min-vh-100">
+        <div class="container mt-5">
+          <!-- Your content here -->
         </div>
-      </footer>
+        <footer class="footer mt-auto w-100">
+          <div class="container">
+            <div class="row py-3">
+              <div class="col-md-6">
+                <h6>Разделы</h6>
+                <ul class="list-unstyled">
+                  <li>
+                    <a href="#" class="text-decoration-none text-dark">
+                      <i class="bi bi-house-door"></i> Главная
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-decoration-none text-dark">
+                      <i class="bi bi-lightbulb"></i> Возможности
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-decoration-none text-dark">
+                      <i class="bi bi-currency-dollar"></i> Цены
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-decoration-none text-dark">
+                      <i class="bi bi-question-circle"></i> FAQ
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-decoration-none text-dark">
+                      <i class="bi bi-info-circle"></i> О нас
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h6>Подписка на новости</h6>
+                <form>
+                  <div class="input-group mb-3">
+                    <input type="email" class="form-control" placeholder="Ваш email">
+                    <button class="btn btn-outline-dark" type="submit">
+                      <i class="bi bi-envelope"></i> Подписаться
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row border-top pt-3">
+              <div class="col-md-6">
+                <p>© 2024 Company, Inc. Все права защищены.</p>
+              </div>
+              <div class="col-md-6 text-end">
+                <a href="https://t.me/belkaratarosk" class="text-dark me-3" target="_blank">
+                  <i class="bi bi-telegram fs-4"></i>
+                </a>
+                <a href="https://github.com/pradigmaz/studporfolio" class="text-dark" target="_blank">
+                  <i class="bi bi-github fs-4"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </body>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.3/jquery.validate.min.js"></script>

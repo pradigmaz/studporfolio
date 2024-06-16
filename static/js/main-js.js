@@ -23,32 +23,7 @@ document.addEventListener("hidden.bs.modal", function (event) {
   }
 });
 
-// скрит для сложности пароля
-document.addEventListener("DOMContentLoaded", function () {
-  const modals = ['#registerModalStudent', '#registerModalEmployer'];
-  modals.forEach(modal => {
-    const passwordInput = document.querySelector(`${modal} input[name="password"]`);
-    if (passwordInput) {
-      const strengthMeter = document.createElement("div");
-      strengthMeter.classList.add("strengthMeter");
-      passwordInput.parentNode.appendChild(strengthMeter);
 
-      passwordInput.addEventListener("input", function () {
-        const value = passwordInput.value;
-        let strength = 0;
-        if (/[A-Z]/.test(value)) strength++;
-        if (/[a-z]/.test(value)) strength++;
-        if (/[0-9]/.test(value)) strength++;
-        if (/[\W]/.test(value)) strength++;
-        if (value.length >= 8) strength++;
-
-        strengthMeter.style.width = `${strength * 20}%`;
-        strengthMeter.style.backgroundColor =
-          strength < 3 ? "red" : strength < 4 ? "yellow" : "green";
-      });
-    }
-  });
-});
 
 // скрипт для скрытия и показа пароля
 document.addEventListener("DOMContentLoaded", function () {
