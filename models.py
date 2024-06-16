@@ -18,8 +18,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     role = db.Column(db.Enum(RoleEnum), nullable=False)
     phone = db.Column(db.String(20), nullable=True)
-    about = db.Column(db.Text, nullable=True)
     avatar = db.Column(db.String(200), nullable=True)
+    about = db.Column(db.Text, nullable=True)
     employer = db.relationship('Employer', backref='user', uselist=False)
     student = db.relationship('Student', backref='user', uselist=False)
 

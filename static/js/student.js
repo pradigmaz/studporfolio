@@ -50,28 +50,6 @@ togglePasswordButtons.forEach((button) => {
 });
 });
 
-// скрипт для сложности пароля
-document.addEventListener("DOMContentLoaded", function () {
-const passwordInput = document.querySelector('#new_password');
-const strengthMeter = document.querySelector('#new_password_strength_meter');
-
-if (passwordInput && strengthMeter) {
-  passwordInput.addEventListener("input", function () {
-    const value = passwordInput.value;
-    let strength = 0;
-    if (/[A-Z]/.test(value)) strength++;
-    if (/[a-z]/.test(value)) strength++;
-    if (/[0-9]/.test(value)) strength++;
-    if (/[\W]/.test(value)) strength++;
-    if (value.length >= 8) strength++;
-
-    strengthMeter.style.width = `${strength * 20}%`;
-    strengthMeter.style.backgroundColor =
-      strength < 3 ? "red" : strength < 4 ? "yellow" : "green";
-  });
-}
-});
-
 
 document.getElementById('searchForm').addEventListener('submit', function(event) {
 event.preventDefault();

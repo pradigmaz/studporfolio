@@ -1,31 +1,33 @@
 {% extends "base_student.html" %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4 mb-4">
   <div class="row">
     <div class="col-md-4">
       <div class="card">
         <div class="card-body text-center">
           <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="150" height="150">
           <h4>{{ student.surname }} {{ student.first_name }} {{ student.middle_name }}</h4>
-          {% if student == current_user %}
-          <a href="{{ url_for('auth.settings') }}" class="btn btn-dark mt-2">Редактировать профиль</a>
-          {% endif %}
-        </div>
-      </div>
-      <div class="card mt-4">
-        <div class="card-body">
-          <h5 class="card-title">Контактная информация</h5>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Ник:</strong> {{ student.username }}</li>
-            <li class="list-group-item"><strong>Номер телефона:</strong> {{ student.user.phone }}</li>
-            <li class="list-group-item"><strong>Email:</strong> {{ student.user.email }}</li>
-            <li class="list-group-item"><strong>О себе:</strong> {{ student.user.about }}</li>
-          </ul>
         </div>
       </div>
     </div>
     <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Контактная информация</h5>
+          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#contactInfo" aria-expanded="false" aria-controls="contactInfo">
+            Показать контактную информацию
+          </button>
+          <div class="collapse mt-3" id="contactInfo">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><strong>Ник:</strong> {{ student.username }}</li>
+              <li class="list-group-item"><strong>Номер телефона:</strong> {{ current_user.phone }}</li>
+              <li class="list-group-item"><strong>Email:</strong> {{ current_user.email }}</li>
+              <li class="list-group-item"><strong>О себе:</strong> {{ current_user.about | replace('\n', '<br>') | safe }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">Портфолио</h3>
@@ -43,26 +45,26 @@
                   </button>
                 </div>
                 <div class="card-footer text-muted">
-                  <small>Область: {{ project.field }}</small>
+                  <small>Категория: {{ project.category }}</small>
                 </div>
               </div>
             </div>
 
             <!-- Modal -->
             <div class="modal fade" id="projectModal{{ project.id }}" tabindex="-1" aria-labelledby="projectModalLabel{{ project.id }}" aria-hidden="true">
-              <div class="modal-dialog">
+              <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="projectModalLabel{{ project.id }}">{{ project.title }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
+                    <p><strong>Категория:</strong> {{ project.category }}</p>
                     <p><strong>Описание:</strong> {{ project.description }}</p>
-                    <p><strong>Область:</strong> {{ project.field }}</p>
                     <p><strong>Файлы:</strong></p>
                     <ul>
                       {% for file in project.files %}
-                      <li><a href="{{ url_for('static', filename=file.filename) }}" target="_blank">{{ file.filename }}</a></li>
+                      <li><a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">{{ file.file_path | basename }}</a></li>
                       {% endfor %}
                     </ul>
                   </div>

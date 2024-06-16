@@ -152,7 +152,6 @@ def student_settings(username):
     
     form = StudentSettingsForm(obj=current_user.student)
     form.university.choices = [(u.id, u.name) for u in University.query.all()]
-    form.about.data = current_user.about  
     password_form = UpdatePasswordForm()
     email_form = UpdateEmailForm(current_email=current_user.email)
 
@@ -163,23 +162,29 @@ def student_settings(username):
             current_user.student.avatar_path = None
             db.session.commit()
         return redirect(url_for('settings.student_settings', username=username))
-
+    
     if form.validate_on_submit():
+        logging.debug(f"Обновление информации о студенте {username}")
         current_user.student.first_name = form.first_name.data
         current_user.student.last_name = form.last_name.data
         current_user.student.middle_name = form.middle_name.data
         current_user.student.university_id = form.university.data
         current_user.phone = form.phone.data
-        current_user.about = form.about.data
+        current_user.about = form.about.data  # Update "about" field in User model
+        db.session.commit()
+        logging.debug("База данных успешно обновлена")
+    
         if form.avatar.data:
             avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
             os.makedirs(avatar_dir, exist_ok=True)
             avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
             form.avatar.data.save(avatar_path)
             current_user.student.avatar_path = avatar_path
-        db.session.commit()
+            db.session.commit()
+        return redirect(url_for('settings.student_settings', username=username))
     
     return render_template('settings_students.html', form=form, password_form=password_form, email_form=email_form, RoleEnum=RoleEnum)
+
 
 
 @settings_bp.route('/settings/employer/<company_name>', methods=['GET', 'POST'])

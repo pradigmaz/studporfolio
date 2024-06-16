@@ -18,7 +18,6 @@ class RegistrationFormStudent(FlaskForm):
                              DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Подтвердите пароль', validators=[
                                      DataRequired(), EqualTo('password')])
-    about = TextAreaField('О себе', validators=[Optional(), Length(max=500)])  # Новое поле
     submit = SubmitField('Зарегистрироваться')
 
 
@@ -32,7 +31,6 @@ class RegistrationFormEmployer(FlaskForm):
                              DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Подтвердите пароль', validators=[
                                      DataRequired(), EqualTo('password')])
-    about = TextAreaField('О себе', validators=[Optional(), Length(max=500)])  # Новое поле
     submit = SubmitField('Зарегистрироваться')
 
 
