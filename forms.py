@@ -4,21 +4,24 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL
 
+from models import University
+
 
 class RegistrationFormStudent(FlaskForm):
     first_name = StringField('Имя', validators=[DataRequired()])
     last_name = StringField('Фамилия', validators=[DataRequired()])
     middle_name = StringField('Отчество', validators=[Length(max=100)])
-    email = StringField('Электронная почта', validators=[
-                        DataRequired(), Email()])
+    email = StringField('Электронная почта', validators=[DataRequired(), Email()])
+    university = SelectField('Университет', coerce=int, validators=[DataRequired()])
     phone = StringField('Телефон', validators=[Length(max=20)])
-    username = StringField('Имя пользователя', validators=[
-                           DataRequired(), Length(max=100)])
-    password = PasswordField('Пароль', validators=[
-                             DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Подтвердите пароль', validators=[
-                                     DataRequired(), EqualTo('password')])
+    username = StringField('Имя пользователя', validators=[DataRequired(), Length(max=100)])
+    password = PasswordField('Пароль', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Зарегистрироваться')
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationFormStudent, self).__init__(*args, **kwargs)
+        self.university.choices = [(uni.id, uni.name) for uni in University.query.all()]
 
 
 class RegistrationFormEmployer(FlaskForm):
@@ -114,7 +117,7 @@ class StudentSettingsForm(FlaskForm):
     first_name = StringField('Имя', validators=[Optional()])
     last_name = StringField('Фамилия', validators=[Optional()])
     middle_name = StringField('Отчество', validators=[Optional()])
-    university = SelectField('Университет', choices=[], validators=[Optional()])
+    university = SelectField('Университет', coerce=int, validators=[Optional()])
     phone = StringField('Телефон', validators=[Optional()])
     about = TextAreaField('О себе', validators=[Optional(), Length(max=500)])
     avatar = FileField('Аватар', validators=[FileAllowed(['jpg', 'png'])])

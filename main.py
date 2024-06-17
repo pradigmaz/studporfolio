@@ -2,10 +2,11 @@ import os
 from flask import Flask
 from routes import auth_bp, project_bp, vacancy_bp, filters_bp, application_bp, main_bp, profile_bp, settings_bp, search_bp
 from config import Config
-from models import db, User, Student, Employer, RoleEnum
+from models import University, db, User, Student, Employer, RoleEnum
 from flask_login import LoginManager
 import logging
 from werkzeug.serving import WSGIRequestHandler
+from universities import UNIVERSITIES
 
 logging.basicConfig(level=logging.DEBUG,
                     format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
@@ -53,6 +54,13 @@ class UTF8RequestHandler(WSGIRequestHandler):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        
+                # Загрузка университетов в БД
+        if not University.query.first():
+            for uni_name in UNIVERSITIES:
+                university = University(name=uni_name)
+                db.session.add(university)
+            db.session.commit()
 
         if not Student.query.filter_by(username='teststudent').first():
             student_user = User(email='teststudent@example.com',

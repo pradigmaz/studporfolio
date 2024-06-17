@@ -17,6 +17,17 @@ filters_bp = Blueprint('filters', __name__)
 application_bp = Blueprint('application', __name__)
 search_bp = Blueprint('search', __name__)
 
+CATEGORY_DISPLAY_NAMES = {
+    'medicine': 'Медицина',
+    'chemistry': 'Химия',
+    'forestry': 'Лесное дело',
+    'it': 'Информационные технологии',
+    'engineering': 'Инженерия',
+    'social_science': 'Социальные науки',
+    'physics': 'Физика',
+    'mathematics': 'Математика'
+}
+
 @main_bp.route('/')
 def index():
     logging.debug("Rendering index page")
@@ -36,9 +47,9 @@ def register_student():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        student = Student(user_id=user.id, username=form.username.data,
-                          first_name=form.first_name.data,
-                          last_name=form.last_name.data, middle_name=form.middle_name.data)
+        student = Student(user_id=user.id, username=form.username.data, first_name=form.first_name.data,
+                          last_name=form.last_name.data, middle_name=form.middle_name.data,
+                          university_id=form.university.data)
         db.session.add(student)
         db.session.commit()
         user_folder = os.path.join(current_app.root_path, f'uploads/users/students/{student.username}')
@@ -61,7 +72,7 @@ def register_employer():
             logging.warning(f"Email {form.email.data} уже используется")
             return render_template('index.html', student_form=RegistrationFormStudent(), employer_form=form, login_form=LoginForm(), form=form, RoleEnum=RoleEnum, error='Email уже используется')
         
-        user = User(email=form.email.data, role=RoleEnum.EMPLOYER)
+        user = User(email=form.email.data, role=RoleEnum.EMPLOYER, phone=form.phone.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -73,8 +84,8 @@ def register_employer():
         os.makedirs(user_folder, exist_ok=True)
         login_user(user)
         logging.info(f"Employer {user.email} registered successfully")
-        return redirect(url_for('auth.employer_profile', employer_id=employer.id))
-    logging.warning("Employer registration form validation failed")
+        return redirect(url_for('profile.employer_profile', company_name=employer.company_name))
+    logging.warning("Ошибка проверки формы регистрации работодателя")
     return render_template('index.html', student_form=RegistrationFormStudent(), employer_form=form, login_form=LoginForm(), form=form, RoleEnum=RoleEnum)
 
 
@@ -121,7 +132,7 @@ def logout():
 def student_profile(username):
     student = Student.query.filter_by(username=username).first_or_404()
     logging.debug(f"Отображение профиля студента {username}")
-    return render_template('profile_students.html', student=student, RoleEnum=RoleEnum)
+    return render_template('profile_students.html', student=student, RoleEnum=RoleEnum, category_display_names=CATEGORY_DISPLAY_NAMES)
 
 
 @profile_bp.route('/profile/employer/<company_name>')
@@ -171,7 +182,7 @@ def student_settings(username):
         current_user.student.middle_name = form.middle_name.data
         current_user.student.university_id = form.university.data
         current_user.phone = form.phone.data
-        current_user.about = form.about.data  # Update "about" field in User model
+        current_user.student.about = form.about.data  
         db.session.commit()
         logging.debug("База данных успешно обновлена")
     
@@ -312,7 +323,7 @@ def edit_project(project_id):
         db.session.commit()
         return redirect(url_for('project.edit_project', project_id=project.id))
 
-    return render_template('project_editing.html', form=form, project=project)
+    return render_template('project_editing.html', form=form, project=project, category_display_names=CATEGORY_DISPLAY_NAMES)
 
 
 @project_bp.route('/projects/delete/<int:project_id>', methods=['POST'])

@@ -143,6 +143,12 @@
                   {{ student_form.username(class="form-control") }}
                 </div>
                 <div class="mb-3">
+                  <label class="form-label" for="university">
+                    <i class="bi bi-building"></i> {{ student_form.university.label.text }}
+                  </label>
+                  {{ student_form.university(class="form-control") }}
+                </div>
+                <div class="mb-3">
                   <label class="form-label" for="password">
                     <i class="bi bi-lock"></i> {{ student_form.password.label.text }}
                   </label>

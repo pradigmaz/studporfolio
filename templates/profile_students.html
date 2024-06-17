@@ -23,6 +23,7 @@
               <li class="list-group-item"><strong>Ник:</strong> {{ student.username }}</li>
               <li class="list-group-item"><strong>Номер телефона:</strong> {{ current_user.phone }}</li>
               <li class="list-group-item"><strong>Email:</strong> {{ current_user.email }}</li>
+              <li class="list-group-item"><strong>Университет:</strong> {{ student.university.name }}</li>
               <li class="list-group-item"><strong>О себе:</strong> {{ current_user.about | replace('\n', '<br>') | safe }}</li>
             </ul>
           </div>
@@ -35,8 +36,6 @@
             {% for project in student.projects %}
             <div class="col">
               <div class="card h-100 shadow-sm">
-                <img src="{{ project.files[0].filename if project.files else url_for('static', filename='default_project_image.jpg') }}"
-                     class="card-img-top" alt="{{ project.title | default('Стандартное изображение проекта') }}" />
                 <div class="card-body">
                   <h5 class="card-title">{{ project.title }}</h5>
                   <p class="card-text">{{ project.description }}</p>
@@ -45,7 +44,7 @@
                   </button>
                 </div>
                 <div class="card-footer text-muted">
-                  <small>Категория: {{ project.category }}</small>
+                  <small>Категория: {{ category_display_names[project.category] }}</small>
                 </div>
               </div>
             </div>
@@ -59,7 +58,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <p><strong>Категория:</strong> {{ project.category }}</p>
+                    <p><strong>Категория:</strong> {{ category_display_names[project.category] }}</p>
                     <p><strong>Описание:</strong> {{ project.description }}</p>
                     <p><strong>Файлы:</strong></p>
                     <ul>
