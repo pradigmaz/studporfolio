@@ -28,6 +28,33 @@ CATEGORY_DISPLAY_NAMES = {
     'mathematics': 'Математика'
 }
 
+EMPLOYMENT_TYPE_DISPLAY_NAMES = {
+    'full_time': 'Полная занятость',
+    'part_time': 'Частичная занятость',
+    'remote': 'Удалённая работа',
+    'internship': 'Стажировка'
+}
+
+SPECIALTY_DISPLAY_NAMES = {
+    'automotive': 'Автомобильный бизнес',
+    'administrative': 'Административный персонал',
+    'security': 'Безопасность',
+    'management': 'Высший и средний менеджмент',
+    'procurement': 'Закупки',
+    'it': 'Информационные технологии',
+    'marketing': 'Маркетинг, реклама, PR',
+    'medicine': 'Медицина, фармацевтика',
+    'science': 'Наука, образование',
+    'sales': 'Продажи, обслуживание клиентов',
+    'labor': 'Рабочий персонал',
+    'retail': 'Розничная торговля',
+    'agriculture': 'Сельское хозяйство',
+    'tourism': 'Туризм, гостиницы, рестораны',
+    'hr': 'Управление персоналом, тренинги',
+    'finance': 'Финансы, бухгалтерия',
+    'legal': 'Юристы'
+}
+
 @main_bp.route('/')
 def index():
     logging.debug("Rendering index page")
@@ -398,7 +425,12 @@ def edit_vacancy(vacancy_id):
 def view_vacancy(vacancy_id):
     vacancy = Vacancy.query.get_or_404(vacancy_id)
     role = current_user.role if current_user.is_authenticated else None
-    return render_template('search_vacancy.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum)
+    return render_template('search_vacancy.html', 
+                           vacancy=vacancy, 
+                           role=role, 
+                           RoleEnum=RoleEnum, 
+                           employment_type_display_names=EMPLOYMENT_TYPE_DISPLAY_NAMES, 
+                           specialty_display_names=SPECIALTY_DISPLAY_NAMES)
 
 # ПУТИ ОТКЛИКОВ
 
@@ -500,7 +532,8 @@ def search_vacancies():
     query = request.args.get('query')
     vacancies = Vacancy.query.filter(Vacancy.title.contains(query) | Vacancy.description.contains(query)).all()
     role = current_user.role if current_user.is_authenticated else None
-    return render_template('search_vacancy.html', vacancies=vacancies, query=query, role=role, RoleEnum=RoleEnum)
+    return render_template('search_vacancy.html', vacancies=vacancies, query=query, role=role, RoleEnum=RoleEnum, employment_type_display_names=EMPLOYMENT_TYPE_DISPLAY_NAMES, 
+                           specialty_display_names=SPECIALTY_DISPLAY_NAMES)
 
 
 @search_bp.route('/search/view_vacancy/<int:vacancy_id>')
@@ -510,7 +543,13 @@ def view_vacancy(vacancy_id):
     role = current_user.role if current_user.is_authenticated else None
     applicants = vacancy.get_applicants() if role == RoleEnum.EMPLOYER and current_user.employer.id == vacancy.employer_id else []
     is_applied = vacancy.is_applied_by_student(current_user.student.id) if role == RoleEnum.STUDENT else False
-    return render_template('search_vacancy.html', vacancy=vacancy, role=role, RoleEnum=RoleEnum, applicants=applicants, is_applied=is_applied)
+    return render_template('search_vacancy.html', 
+                           vacancy=vacancy, 
+                           role=role, 
+                           RoleEnum=RoleEnum, 
+                           applicants=applicants, 
+                           is_applied=is_applied,
+                           employment_type_display_names=EMPLOYMENT_TYPE_DISPLAY_NAMES, specialty_display_names=SPECIALTY_DISPLAY_NAMES)
 
 @search_bp.route('/search/view_profiles/students/<username>')
 @login_required

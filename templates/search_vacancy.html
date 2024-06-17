@@ -20,12 +20,12 @@
 
                     <p class="lead"><strong>Детали вакансии:</strong></p>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Тип занятости:</strong> {{ vacancy.employment_type }}</li>
+                        <li class="list-group-item"><strong>Тип занятости:</strong> {{ employment_type_display_names[vacancy.employment_type] }}</li>
                         <li class="list-group-item"><strong>Обязанности:</strong> {{ vacancy.responsibilities }}</li>
                         <li class="list-group-item"><strong>Требования:</strong> {{ vacancy.requirements }}</li>
                         <li class="list-group-item"><strong>Условия работы:</strong> {{ vacancy.conditions }}</li>
                         <li class="list-group-item"><strong>Ключевые навыки:</strong> {{ vacancy.key_skills }}</li>
-                        <li class="list-group-item"><strong>Сфера деятельности:</strong> {{ vacancy.specialty }}</li>
+                        <li class="list-group-item"><strong>Сфера деятельности:</strong> {{ specialty_display_names[vacancy.specialty] }}</li>
                     </ul>
                     {% if role == RoleEnum.STUDENT %}
                         {% if is_applied %}
