@@ -32,11 +32,12 @@ def register_student():
         return redirect(url_for('main.index'))
     form = RegistrationFormStudent()
     if form.validate_on_submit():
-        user = User(email=form.email.data, role=RoleEnum.STUDENT)
+        user = User(email=form.email.data, role=RoleEnum.STUDENT, phone=form.phone.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        student = Student(user_id=user.id, first_name=form.first_name.data,
+        student = Student(user_id=user.id, username=form.username.data,
+                          first_name=form.first_name.data,
                           last_name=form.last_name.data, middle_name=form.middle_name.data)
         db.session.add(student)
         db.session.commit()
@@ -44,8 +45,8 @@ def register_student():
         os.makedirs(user_folder, exist_ok=True)
         login_user(user)
         logging.info(f"Student {user.email} registered successfully")
-        return redirect(url_for('auth.student_profile', student_id=student.id))
-    logging.warning("Student registration form validation failed")
+        return redirect(url_for('profile.student_profile', username=student.username))
+    logging.warning("Ошибка проверки формы регистрации студента")
     return render_template('index.html', student_form=form, employer_form=RegistrationFormEmployer(), login_form=LoginForm(), form=form, RoleEnum=RoleEnum)
 
 
