@@ -15,6 +15,9 @@
         <a class="list-group-item list-group-item-action" id="password-tab" data-bs-toggle="list" href="#password" role="tab" aria-controls="password">
           <i class="bi bi-lock"></i> Пароль
         </a>
+        <a class="list-group-item list-group-item-action" id="university-tab" data-bs-toggle="list" href="#university" role="tab" aria-controls="university">
+          <i class="bi bi-building"></i> Университет
+        </a>
       </div>
     </div>
     <div class="col-md-6">
@@ -33,10 +36,6 @@
             <div class="mb-3">
               <label for="middle_name" class="form-label">Отчество:</label>
               {{ form.middle_name(class="form-control") }}
-            </div>
-            <div class="mb-3">
-              <label for="university" class="form-label">Университет:</label>
-              {{ form.university(class="form-control") }}
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">Телефон:</label>
@@ -103,6 +102,16 @@
               </div>  
             </div>
             <button type="submit" class="btn btn-primary">Обновить</button>
+          </form>
+        </div>
+        <div class="tab-pane fade" id="university" role="tabpanel" aria-labelledby="university-tab">
+          <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+              <label for="university" class="form-label">Университет:</label>
+              {{ form.university(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Сохранить изменения</button>
           </form>
         </div>
       </div>

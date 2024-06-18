@@ -22,7 +22,8 @@
           <div class="collapse mt-3" id="contactInfo">
             <ul class="list-group list-group-flush">
               <li class="list-group-item"><strong>Email:</strong> <a href="mailto:{{ current_user.email }}">{{ current_user.email }}</a></li>
-              <li class="list-group-item"><strong>Телефон:</strong> <a href="tel:{{ current_user.phone_number }}">{{ current_user.phone_number }}</a></li>
+              <li class="list-group-item"><strong>Телефон:</strong> <a href="tel:{{ current_user.phone }}">{{ current_user.phone }}</a></li>
+              <li class="list-group-item"><strong>Адрес:</strong> {{ current_user.employer.address }}</li>
               <li class="list-group-item"><strong>О компании:</strong> {{ current_user.about | replace('\n', '<br>') | safe }}</li>
             </ul>
           </div>
@@ -46,9 +47,7 @@
                 <td>{{ vacancy.description | truncate(50) }}</td>
                 <td>
                   <a href="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-primary btn-sm">Редактировать</a>
-                  <form action="{{ url_for('vacancy.delete_vacancy', vacancy_id=vacancy.id) }}" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить эту вакансию?')">Удалить</button>
-                  </form>
+                  <a href="{{ url_for('search.view_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-primary btn-sm">Просмотреть</a>
                 </td>
               </tr>
               {% endfor %}

@@ -33,13 +33,15 @@
           </div>
         </div>
         
-        <div class="mb-3" id="repository_url_group" style="display: none;">
+        {% if form.category.data == 'it' %}
+        <div class="mb-3" id="repository_url_group">
           {{ form.repository_url.label(class="form-label text-light") }}
           <div class="input-group">
             <span class="input-group-text bg-secondary text-white"><i class="bi bi-link-45deg"></i></span>
             {{ form.repository_url(class="form-control bg-secondary text-white", required=True) }}
           </div>
         </div>
+        {% endif %}
         
         <div class="mb-3">
           {{ form.add_new_files.label(class="form-label text-light") }}
@@ -74,22 +76,4 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const categoryField = document.querySelector('#{{ form.category.id }}');
-    const repositoryUrlGroup = document.getElementById('repository_url_group');
-
-    function toggleRepositoryUrlField() {
-      if (categoryField.value === 'it') {
-        repositoryUrlGroup.style.display = 'block';
-      } else {
-        repositoryUrlGroup.style.display = 'none';
-      }
-    }
-
-    categoryField.addEventListener('change', toggleRepositoryUrlField);
-    toggleRepositoryUrlField();  // Initial check
-  });
-</script>
 {% endblock %}

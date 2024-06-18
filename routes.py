@@ -7,6 +7,8 @@ import os
 import shutil
 import logging
 
+
+
 main_bp = Blueprint('main', __name__)
 auth_bp = Blueprint('auth', __name__)
 profile_bp = Blueprint('profile', __name__)
@@ -194,33 +196,31 @@ def student_settings(username):
     password_form = UpdatePasswordForm()
     email_form = UpdateEmailForm(current_email=current_user.email)
 
-    if form.delete_avatar.data:
-        avatar_path = current_user.student.avatar_path
-        if avatar_path and os.path.exists(avatar_path):
-            os.remove(avatar_path)
-            current_user.student.avatar_path = None
+    if request.method == 'POST':
+        if form.delete_avatar.data:
+            avatar_path = current_user.student.avatar_path
+            if avatar_path and os.path.exists(avatar_path):
+                os.remove(avatar_path)
+                current_user.student.avatar_path = None
+                db.session.commit()
+            return redirect(url_for('settings.student_settings', username=username))
+        
+        if form.validate_on_submit():
+            current_user.student.first_name = form.first_name.data
+            current_user.student.last_name = form.last_name.data
+            current_user.student.middle_name = form.middle_name.data
+            current_user.student.university_id = form.university.data
+            current_user.phone = form.phone.data
+            current_user.student.about = form.about.data  
             db.session.commit()
-        return redirect(url_for('settings.student_settings', username=username))
-    
-    if form.validate_on_submit():
-        logging.debug(f"Обновление информации о студенте {username}")
-        current_user.student.first_name = form.first_name.data
-        current_user.student.last_name = form.last_name.data
-        current_user.student.middle_name = form.middle_name.data
-        current_user.student.university_id = form.university.data
-        current_user.phone = form.phone.data
-        current_user.student.about = form.about.data  
-        db.session.commit()
-        logging.debug("База данных успешно обновлена")
-    
-        if form.avatar.data:
-            avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
-            os.makedirs(avatar_dir, exist_ok=True)
-            avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
-            form.avatar.data.save(avatar_path)
-            current_user.student.avatar_path = avatar_path
-            db.session.commit()
-        return redirect(url_for('settings.student_settings', username=username))
+            if form.avatar.data:
+                avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
+                os.makedirs(avatar_dir, exist_ok=True)
+                avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
+                form.avatar.data.save(avatar_path)
+                current_user.student.avatar_path = avatar_path
+                db.session.commit()
+            return redirect(url_for('settings.student_settings', username=username))
     
     return render_template('settings_students.html', form=form, password_form=password_form, email_form=email_form, RoleEnum=RoleEnum)
 
@@ -248,6 +248,7 @@ def employer_settings(company_name):
         current_user.employer.company_name = form.company_name.data
         current_user.phone = form.phone.data
         current_user.about = form.about.data
+        current_user.employer.address = form.address.data  # Добавить это поле
         if form.avatar.data:
             avatar_dir = os.path.join('static', 'uploads', 'users', 'employers', company_name, 'avatars')
             os.makedirs(avatar_dir, exist_ok=True)
@@ -258,6 +259,10 @@ def employer_settings(company_name):
         return redirect(url_for('settings.employer_settings', company_name=company_name))
     
     return render_template('settings_employers.html', form=form, password_form=password_form, email_form=email_form)
+
+
+
+
 
 # ПУТИ ПРОЕКТОВ
 
@@ -372,6 +377,9 @@ def delete_project(project_id):
 @vacancy_bp.route('/vacancies')
 @login_required
 def list_vacancies():
+    if current_user.role != RoleEnum.EMPLOYER:
+        return redirect(url_for('main.index'))
+    
     vacancies = Vacancy.query.filter_by(
         employer_id=current_user.employer.id).all()
     return render_template('vacancy_list.html', vacancies=vacancies)
@@ -415,6 +423,12 @@ def edit_vacancy(vacancy_id):
     if form.validate_on_submit():
         vacancy.title = form.title.data
         vacancy.description = form.description.data
+        vacancy.employment_type = form.employment_type.data
+        vacancy.responsibilities = form.responsibilities.data
+        vacancy.requirements = form.requirements.data
+        vacancy.conditions = form.conditions.data
+        vacancy.key_skills = form.key_skills.data
+        vacancy.specialty = form.specialty.data
         db.session.commit()
         return redirect(url_for('vacancy.list_vacancies'))
     return render_template('vacancy_editing.html', form=form, vacancy=vacancy)
@@ -556,7 +570,7 @@ def view_vacancy(vacancy_id):
 def view_student(username):
     student = Student.query.filter_by(username=username).first_or_404()
     role = current_user.role if current_user.is_authenticated else None
-    return render_template('search_student.html', student=student, role=role, RoleEnum=RoleEnum)
+    return render_template('search_student.html', student=student, role=role, RoleEnum=RoleEnum, category_display_names=CATEGORY_DISPLAY_NAMES, specialty_display_names=SPECIALTY_DISPLAY_NAMES)
 
 @search_bp.route('/search/view_profiles/employers/<company_name>')
 @login_required

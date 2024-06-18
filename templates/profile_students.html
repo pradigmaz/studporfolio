@@ -1,12 +1,13 @@
 {% extends "base_student.html" %}
 
 {% block content %}
+
 <div class="container mt-4 mb-4">
   <div class="row">
     <div class="col-md-4">
       <div class="card">
         <div class="card-body text-center">
-          <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="150" height="150">
+          <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
           <h5>{{ student.last_name }} {{ student.first_name }} {{ student.middle_name }}</h5>
         </div>
       </div>
@@ -38,7 +39,7 @@
               <div class="card h-100 shadow-sm">
                 <div class="card-body">
                   <h5 class="card-title">{{ project.title }}</h5>
-                  <p class="card-text">{{ project.description }}</p>
+                  <p class="card-text">{{ project.description|truncate(50) }}</p>
                   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">
                     Посмотреть
                   </button>
@@ -58,14 +59,25 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    <p><strong>Категория:</strong> {{ category_display_names[project.category] }}</p>
-                    <p><strong>Описание:</strong> {{ project.description }}</p>
-                    <p><strong>Файлы:</strong></p>
-                    <ul>
-                      {% for file in project.files %}
-                      <li><a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">{{ file.file_path | basename }}</a></li>
-                      {% endfor %}
-                    </ul>
+                    <div class="mb-3">
+                      <p><strong>Категория:</strong> {{ category_display_names[project.category] }}</p>
+                    </div>
+                    <div class="mb-3">
+                      <p><strong>Описание:</strong> {{ project.description }}</p>
+                    </div>
+                    {% if category_display_names[project.category] == "Информационные технологии" %}
+                    <div class="mb-3">
+                      <p><strong>URL репозитория:</strong> <a href="{{ project.repository_url }}" target="_blank">{{ project.repository_url }}</a></p>
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                      <p><strong>Файлы:</strong></p>
+                      <ul class="list-group">
+                        {% for file in project.files %}
+                        <li class="list-group-item"><a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">{{ file.file_path | basename }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>

@@ -5,12 +5,13 @@
 {% endif %}
 
 {% block content %}
+
 <div class="container mt-4 mb-4">
   <div class="row">
     <div class="col-md-4">
       <div class="card">
         <div class="card-body text-center">
-          <img src="{{ current_user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" width="150" height="150">
+          <img src="{{ student.user.avatar_url() }}" alt="avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
           <h5>{{ student.last_name }} {{ student.first_name }} {{ student.middle_name }}</h5>
         </div>
       </div>
@@ -25,10 +26,10 @@
           <div class="collapse mt-3" id="contactInfo">
             <ul class="list-group list-group-flush">
               <li class="list-group-item"><strong>Ник:</strong> {{ student.username }}</li>
-              <li class="list-group-item"><strong>Номер телефона:</strong> {{ current_user.phone }}</li>
-              <li class="list-group-item"><strong>Email:</strong> {{ current_user.email }}</li>
+              <li class="list-group-item"><strong>Номер телефона:</strong> {{ student.user.phone }}</li>
+              <li class="list-group-item"><strong>Email:</strong> {{ student.user.email }}</li>
               <li class="list-group-item"><strong>Университет:</strong> {{ student.university.name }}</li>
-              <li class="list-group-item"><strong>О себе:</strong> {{ current_user.about | replace('\n', '<br>') | safe }}</li>
+              <li class="list-group-item"><strong>О себе:</strong> {{ student.user.about | replace('\n', '<br>') | safe }}</li>
             </ul>
           </div>
         </div>
@@ -42,7 +43,7 @@
               <div class="card h-100 shadow-sm">
                 <div class="card-body">
                   <h5 class="card-title">{{ project.title }}</h5>
-                  <p class="card-text">{{ project.description }}</p>
+                  <p class="card-text">{{ project.description|truncate(50) }}</p>
                   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">
                     Посмотреть
                   </button>
@@ -64,6 +65,9 @@
                   <div class="modal-body">
                     <p><strong>Категория:</strong> {{ category_display_names[project.category] }}</p>
                     <p><strong>Описание:</strong> {{ project.description }}</p>
+                    {% if category_display_names[project.category] == "Информационные технологии" %}
+                    <p><strong>URL репозитория:</strong> <a href="{{ project.repository_url }}" target="_blank">{{ project.repository_url }}</a></p>
+                    {% endif %}
                     <p><strong>Файлы:</strong></p>
                     <ul>
                       {% for file in project.files %}

@@ -1,4 +1,4 @@
-{% extends "base_employer.html" %} 
+{% extends "base_employer.html" %}
 
 {% block content %}
     <div class="container py-5">
@@ -38,10 +38,9 @@
                 {{ form.specialty(class="form-control") }}
             </div>
             <div class="form-group">
-                {{ form.submit(class="btn btn-primary", label="Сохранить изменения") }}
+                {{ form.save(class="btn btn-primary") }}
                 <a href="{{ url_for('vacancy.list_vacancies') }}" class="btn btn-secondary">Отмена</a>
             </div>
         </form>
     </div>
-</body>
 {% endblock %}

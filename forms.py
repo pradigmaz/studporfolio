@@ -111,6 +111,7 @@ class VacancyForm(FlaskForm):
         ('legal', 'Юристы'),
     ], validators=[Optional()])
     submit = SubmitField('Создать вакансию')
+    save = SubmitField('Сохранить изменения')
 
 
 class StudentSettingsForm(FlaskForm):
@@ -129,6 +130,7 @@ class EmployerSettingsForm(FlaskForm):
     company_name = StringField('Название компании', validators=[Optional()])
     email = StringField('Электронная почта', validators=[Optional(), Email()])
     phone = StringField('Телефон', validators=[Optional()])
+    address = StringField('Адрес', validators=[Optional()])
     about = TextAreaField('О компании', validators=[Optional()])
     avatar = FileField('Аватар', validators=[FileAllowed(['jpg', 'png'])])
     delete_avatar = SubmitField('Удалить аватар')

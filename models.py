@@ -67,6 +67,7 @@ class Employer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), unique=True, nullable=False)
     company_name = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(255), nullable=True)
     avatar_path = db.Column(db.String(200), nullable=True)  # Добавить это поле
     vacancies = db.relationship('Vacancy', backref='employer', lazy=True, cascade="all, delete-orphan")
 
