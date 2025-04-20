@@ -1,0 +1,5 @@
+venv/
+.cursor/
+__pycache__/
+
+instance/

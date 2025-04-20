@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, current_app, jsonify
+from flask import Blueprint, render_template, redirect, url_for, request, current_app, jsonify, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from models import Application, ProjectFile, University, db, User, Student, Employer, RoleEnum, Project, Vacancy
 from forms import ApplicationForm, EmployerSettingsForm, RegistrationFormStudent, RegistrationFormEmployer, LoginForm, StudentSettingsForm, UpdateEmailForm, UpdatePasswordForm, ProjectForm, VacancyForm
@@ -192,12 +192,22 @@ def student_settings(username):
         return redirect(url_for('main.index'))
     
     form = StudentSettingsForm(obj=current_user.student)
+    form.phone.data = current_user.phone
+    form.about.data = current_user.about  # Явно устанавливаем значение из модели пользователя
     form.university.choices = [(u.id, u.name) for u in University.query.all()]
     password_form = UpdatePasswordForm()
     email_form = UpdateEmailForm(current_email=current_user.email)
 
+    logging.debug(f"Request method: {request.method}")
     if request.method == 'POST':
+        logging.debug(f"Form data: {request.form}")
+        logging.debug(f"About field in form data: {'about' in request.form}")
+        logging.debug(f"University field in form data: {'university' in request.form}")
+        logging.debug(f"University current ID: {current_user.student.university_id}")
+        
+        # Проверяем какая кнопка была нажата
         if form.delete_avatar.data:
+            logging.debug("Processing delete avatar request")
             avatar_path = current_user.student.avatar_path
             if avatar_path and os.path.exists(avatar_path):
                 os.remove(avatar_path)
@@ -205,23 +215,130 @@ def student_settings(username):
                 db.session.commit()
             return redirect(url_for('settings.student_settings', username=username))
         
-        if form.validate_on_submit():
-            current_user.student.first_name = form.first_name.data
-            current_user.student.last_name = form.last_name.data
-            current_user.student.middle_name = form.middle_name.data
-            current_user.student.university_id = form.university.data
-            current_user.phone = form.phone.data
-            current_user.student.about = form.about.data  
-            db.session.commit()
-            if form.avatar.data:
-                avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
-                os.makedirs(avatar_dir, exist_ok=True)
-                avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
-                form.avatar.data.save(avatar_path)
-                current_user.student.avatar_path = avatar_path
+        # Обработка основной формы профиля
+        elif 'profile_submit' in request.form or ('about' in request.form and 'university_submit' not in request.form):
+            logging.debug("Processing profile form")
+            # Заполняем форму данными из запроса для валидации
+            form = StudentSettingsForm(request.form, obj=current_user.student)
+            form.university.choices = [(u.id, u.name) for u in University.query.all()]
+            
+            if form.validate_on_submit():
+                logging.debug("Student settings form validated successfully.")
+                logging.debug(f"Form 'about' data: {form.about.data}")
+                logging.debug(f"Current user 'about' before update: {current_user.about}")
+                
+                # Сохраняем текущее значение university_id перед обновлением
+                current_university_id = current_user.student.university_id
+                logging.debug(f"Current university_id before update: {current_university_id}")
+                
+                # Обновляем данные пользователя
+                current_user.student.first_name = form.first_name.data
+                current_user.student.last_name = form.last_name.data
+                current_user.student.middle_name = form.middle_name.data
+                
+                # Проверяем, изменилось ли значение university в форме
+                if 'university' in request.form and request.form['university']:
+                    try:
+                        university_id = int(request.form['university'])
+                        university = University.query.get(university_id)
+                        if university:
+                            logging.debug(f"Updating university from form value: {university_id} ({university.name})")
+                            current_user.student.university_id = university_id
+                        else:
+                            logging.warning(f"University with id {university_id} not found, keeping current value: {current_university_id}")
+                    except ValueError:
+                        logging.warning(f"Invalid university ID format: {request.form['university']}, keeping current value: {current_university_id}")
+                else:
+                    # Сохраняем текущее значение university_id
+                    logging.debug(f"Preserving current university_id: {current_university_id}")
+                
+                current_user.phone = form.phone.data
+                
+                # Явно логируем обновление поля about
+                logging.debug(f"Updating 'about' field from '{current_user.about}' to '{form.about.data}'")
+                current_user.about = form.about.data
+                
+                logging.debug(f"Current user 'about' after assignment (before commit): {current_user.about}")
+                
+                # Попытка сохранения в базу данных
+                try:
+                    db.session.commit()
+                    logging.debug("Database session committed for student settings.")
+                    logging.debug(f"Verification after commit: User 'about' = {current_user.about}")
+                    logging.debug(f"Verification after commit: University ID = {current_user.student.university_id}")
+                    
+                    # Проверка, что данные действительно сохранились
+                    db.session.refresh(current_user)
+                    logging.debug(f"After refresh: User 'about' = {current_user.about}")
+                    logging.debug(f"After refresh: University ID = {current_user.student.university_id}")
+                except Exception as e:
+                    logging.error(f"Error during database commit: {str(e)}")
+                    db.session.rollback()
+                    flash('Произошла ошибка при сохранении данных', 'danger')
+                    return redirect(url_for('settings.student_settings', username=username))
+                
+                # Обработка аватара, если он был загружен
+                if form.avatar.data:
+                    avatar_dir = os.path.join('static', 'uploads', 'users', 'students', username, 'avatars')
+                    os.makedirs(avatar_dir, exist_ok=True)
+                    avatar_path = os.path.join(avatar_dir, 'avatar.jpg')
+                    form.avatar.data.save(avatar_path)
+                    current_user.student.avatar_path = avatar_path
+                    db.session.commit()
+                
+                # Добавляем флеш-сообщение для подтверждения
+                flash('Настройки профиля успешно обновлены', 'success')
+                return redirect(url_for('settings.student_settings', username=username))
+            else:
+                logging.debug(f"Form validation errors: {form.errors}")
+                flash('Ошибка при обновлении профиля. Проверьте введенные данные.', 'danger')
+        
+        # Обработка формы изменения пароля
+        elif 'password_submit' in request.form or 'current_password' in request.form:
+            logging.debug("Processing password form")
+            if password_form.validate_on_submit():
+                # Обработка изменения пароля
+                if current_user.check_password(password_form.current_password.data):
+                    current_user.set_password(password_form.new_password.data)
+                    db.session.commit()
+                    flash('Ваш пароль был успешно изменен', 'success')
+                else:
+                    flash('Текущий пароль неверен', 'danger')
+                return redirect(url_for('settings.student_settings', username=username))
+            else:
+                for field, errors in password_form.errors.items():
+                    for error in errors:
+                        flash(f'Ошибка в поле {field}: {error}', 'danger')
+        
+        # Обработка формы изменения email
+        elif 'email_submit' in request.form or ('email' in request.form and 'current_email' in request.form):
+            logging.debug("Processing email form")
+            if email_form.validate_on_submit():
+                current_user.email = email_form.email.data
                 db.session.commit()
-            return redirect(url_for('settings.student_settings', username=username))
+                flash('Ваш email был успешно изменен', 'success')
+                return redirect(url_for('settings.student_settings', username=username))
+            else:
+                for field, errors in email_form.errors.items():
+                    for error in errors:
+                        flash(f'Ошибка в поле {field}: {error}', 'danger')
+        
+        # Обработка формы университета
+        elif 'university_submit' in request.form:
+            logging.debug("Processing university form")
+            form.university.choices = [(u.id, u.name) for u in University.query.all()]
+            if form.validate_on_submit():
+                logging.debug(f"Updating university_id from university form: {form.university.data}")
+                current_user.student.university_id = form.university.data
+                db.session.commit()
+                logging.debug(f"Verification after university commit: University ID = {current_user.student.university_id}")
+                flash('Данные университета обновлены успешно', 'success')
+                return redirect(url_for('settings.student_settings', username=username))
+            else:
+                logging.debug(f"University form validation errors: {form.errors}")
+                flash('Ошибка при обновлении университета', 'danger')
     
+    # Для GET запроса или после обработки формы
     return render_template('settings_students.html', form=form, password_form=password_form, email_form=email_form, RoleEnum=RoleEnum)
 
 

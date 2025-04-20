@@ -3,6 +3,19 @@
 {% block content %}
 <div class="container mt-5">
   <h2 class="text-center mb-4">Настройки профиля студента</h2>
+  
+  <!-- Отображение флеш-сообщений -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
   <div class="row">
     <div class="col-md-3">
       <div class="list-group" id="settingsTab" role="tablist">
@@ -28,23 +41,59 @@
             <div class="mb-3">
               <label for="first_name" class="form-label">Имя:</label>
               {{ form.first_name(class="form-control") }}
+              {% if form.first_name.errors %}
+                <div class="text-danger">
+                  {% for error in form.first_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
             <div class="mb-3">
               <label for="last_name" class="form-label">Фамилия:</label>
               {{ form.last_name(class="form-control") }}
+              {% if form.last_name.errors %}
+                <div class="text-danger">
+                  {% for error in form.last_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
             <div class="mb-3">
               <label for="middle_name" class="form-label">Отчество:</label>
               {{ form.middle_name(class="form-control") }}
+              {% if form.middle_name.errors %}
+                <div class="text-danger">
+                  {% for error in form.middle_name.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">Телефон:</label>
               {{ form.phone(class="form-control", placeholder="+7 (___)-___-__-__")  }}
+              {% if form.phone.errors %}
+                <div class="text-danger">
+                  {% for error in form.phone.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div>
             <div class="mb-3">
               <label for="about" class="form-label">О себе:</label>
               {{ form.about(class="form-control", rows="6") }}
+              {% if form.about.errors %}
+                <div class="text-danger">
+                  {% for error in form.about.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
             </div> 
+            <input type="hidden" name="university" value="{{ current_user.student.university_id }}">
             <div class="mb-3">
               <label for="avatar" class="form-label">Аватар:</label>
               {{ form.avatar(class="form-control") }}
@@ -52,12 +101,12 @@
             <div class="mb-3">
               {{ form.delete_avatar(class="btn btn-danger btn-sm") }}
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Сохранить изменения</button>
+            <button type="submit" class="btn btn-primary btn-sm" name="profile_submit">Сохранить изменения</button>
           </form>
         </div>
         <div class="tab-pane fade" id="email" role="tabpanel" aria-labelledby="email-tab">
           <h4>Изменить электронную почту</h4>
-          <form method="post" action="{{ url_for('settings.student_settings', username=current_user.username) }}">
+          <form method="post" action="{{ url_for('settings.student_settings', username=current_user.student.username) }}">
             {{ email_form.hidden_tag() }}
             <div class="mb-3">
               <label for="current_email" class="form-label">Текущая электронная почта:</label>
@@ -67,7 +116,7 @@
               <label for="email" class="form-label">Новая электронная почта:</label>
               {{ email_form.email(class="form-control") }}
             </div>
-            <button type="submit" class="btn btn-primary">Обновить</button>
+            <button type="submit" class="btn btn-primary" name="email_submit">Обновить</button>
           </form>
         </div>
         <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
@@ -101,7 +150,7 @@
                 </button>
               </div>  
             </div>
-            <button type="submit" class="btn btn-primary">Обновить</button>
+            <button type="submit" class="btn btn-primary" name="password_submit">Обновить</button>
           </form>
         </div>
         <div class="tab-pane fade" id="university" role="tabpanel" aria-labelledby="university-tab">
@@ -111,7 +160,7 @@
               <label for="university" class="form-label">Университет:</label>
               {{ form.university(class="form-control") }}
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">Сохранить изменения</button>
+            <button type="submit" class="btn btn-primary btn-sm" name="university_submit">Сохранить изменения</button>
           </form>
         </div>
       </div>
