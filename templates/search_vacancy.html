@@ -32,6 +32,7 @@
                             <p class="text-success">Вы откликнулись на эту вакансию</p>
                         {% else %}
                             <form action="{{ url_for('application.apply', vacancy_id=vacancy.id) }}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" class="btn btn-success">Откликнуться на вакансию</button>
                             </form>
                         {% endif %}

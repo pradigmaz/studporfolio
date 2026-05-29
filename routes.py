@@ -81,7 +81,7 @@ def register_student():
                           university_id=form.university.data)
         db.session.add(student)
         db.session.commit()
-        user_folder = os.path.join(current_app.root_path, f'uploads/users/students/{student.username}')
+        user_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'users', 'students', student.username)
         os.makedirs(user_folder, exist_ok=True)
         login_user(user)
         logging.info(f"Student {user.email} registered successfully")
@@ -109,7 +109,7 @@ def register_employer():
             user_id=user.id, company_name=form.company_name.data)
         db.session.add(employer)
         db.session.commit()
-        user_folder = os.path.join(current_app.root_path, f'uploads/users/employers/{secure_filename(employer.company_name)}')
+        user_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'users', 'employers', secure_filename(employer.company_name))
         os.makedirs(user_folder, exist_ok=True)
         login_user(user)
         logging.info(f"Employer {user.email} registered successfully")
@@ -210,7 +210,10 @@ def student_settings(username):
             logging.debug("Processing delete avatar request")
             avatar_path = current_user.student.avatar_path
             if avatar_path and os.path.exists(avatar_path):
-                os.remove(avatar_path)
+                try:
+                    os.remove(avatar_path)
+                except Exception as e:
+                    logging.error(f"Error removing avatar file: {str(e)}")
                 current_user.student.avatar_path = None
                 db.session.commit()
             return redirect(url_for('settings.student_settings', username=username))
@@ -240,7 +243,7 @@ def student_settings(username):
                 if 'university' in request.form and request.form['university']:
                     try:
                         university_id = int(request.form['university'])
-                        university = University.query.get(university_id)
+                        university = db.session.get(University, university_id)
                         if university:
                             logging.debug(f"Updating university from form value: {university_id} ({university.name})")
                             current_user.student.university_id = university_id
@@ -356,7 +359,10 @@ def employer_settings(company_name):
     if form.delete_avatar.data:
         avatar_path = current_user.employer.avatar_path
         if avatar_path and os.path.exists(avatar_path):
-            os.remove(avatar_path)
+            try:
+                os.remove(avatar_path)
+            except Exception as e:
+                logging.error(f"Error removing employer avatar: {str(e)}")
             current_user.employer.avatar_path = None
             db.session.commit()
         return redirect(url_for('settings.employer_settings', company_name=company_name))
@@ -406,16 +412,18 @@ def create_project():
         db.session.add(project)
         db.session.flush()
 
-        project_folder = os.path.join(current_app.root_path, f'uploads/users/students/{current_user.student.username}/projects/{project.title}')
-        os.makedirs(project_folder, exist_ok=True)
+        rel_folder = os.path.join('uploads', 'users', 'students', current_user.student.username, 'projects', f'project_{project.id}')
+        abs_folder = os.path.join(current_app.root_path, 'static', rel_folder)
+        os.makedirs(abs_folder, exist_ok=True)
 
         if form.file.data:
             for uploaded_file in form.file.data:
                 if uploaded_file:
                     filename = secure_filename(uploaded_file.filename)
-                    file_path = os.path.join(project_folder, filename)
-                    uploaded_file.save(file_path)
-                    project_file = ProjectFile(file_path=file_path, project_id=project.id)
+                    abs_file_path = os.path.join(abs_folder, filename)
+                    uploaded_file.save(abs_file_path)
+                    db_path = os.path.join(rel_folder, filename).replace('\\', '/')
+                    project_file = ProjectFile(file_path=db_path, project_id=project.id)
                     db.session.add(project_file)
 
         db.session.commit()
@@ -426,7 +434,7 @@ def create_project():
 @project_bp.route('/projects/edit/<int:project_id>', methods=['GET', 'POST'])
 @login_required
 def edit_project(project_id):
-    project = Project.query.get_or_404(project_id)
+    project = db.get_or_404(Project, project_id)
     form = ProjectForm(obj=project)
     form.existing_files.choices = [(file.id, file.file_path) for file in project.files]
 
@@ -439,34 +447,45 @@ def edit_project(project_id):
         project.category = form.category.data
         project.repository_url = form.repository_url.data
 
+        rel_folder = os.path.join('uploads', 'users', 'students', current_user.student.username, 'projects', f'project_{project.id}')
+        abs_folder = os.path.join(current_app.root_path, 'static', rel_folder)
+
         if form.file.data:
-            project_folder = os.path.join(current_app.root_path, f'uploads/users/students/{current_user.student.username}/projects/{project.title}')
-            os.makedirs(project_folder, exist_ok=True)
+            os.makedirs(abs_folder, exist_ok=True)
             for uploaded_file in form.file.data:
                 if uploaded_file:
                     filename = secure_filename(uploaded_file.filename)
-                    file_path = os.path.join(project_folder, filename)
-                    uploaded_file.save(file_path)
-                    project_file = ProjectFile(file_path=file_path, project_id=project.id)
+                    abs_file_path = os.path.join(abs_folder, filename)
+                    uploaded_file.save(abs_file_path)
+                    db_path = os.path.join(rel_folder, filename).replace('\\', '/')
+                    project_file = ProjectFile(file_path=db_path, project_id=project.id)
                     db.session.add(project_file)
 
         if form.add_new_files.data:
-            project_folder = os.path.join(current_app.root_path, f'uploads/users/students/{current_user.student.username}/projects/{project.title}')
-            os.makedirs(project_folder, exist_ok=True)
+            os.makedirs(abs_folder, exist_ok=True)
             for uploaded_file in form.add_new_files.data:
                 if uploaded_file:
                     filename = secure_filename(uploaded_file.filename)
-                    file_path = os.path.join(project_folder, filename)
-                    uploaded_file.save(file_path)
-                    project_file = ProjectFile(file_path=file_path, project_id=project.id)
+                    abs_file_path = os.path.join(abs_folder, filename)
+                    uploaded_file.save(abs_file_path)
+                    db_path = os.path.join(rel_folder, filename).replace('\\', '/')
+                    project_file = ProjectFile(file_path=db_path, project_id=project.id)
                     db.session.add(project_file)
 
         if 'delete_selected' in request.form:
             files_to_delete = request.form.getlist('delete_files')
             for file_id in files_to_delete:
-                file_to_delete = ProjectFile.query.get(file_id)
+                file_to_delete = db.session.get(ProjectFile, file_id)
                 if file_to_delete:
-                    os.remove(file_to_delete.file_path)
+                    if file_to_delete.file_path:
+                        full_path = file_to_delete.file_path
+                        if not os.path.isabs(full_path):
+                            full_path = os.path.join(current_app.root_path, 'static', full_path)
+                        if os.path.exists(full_path):
+                            try:
+                                os.remove(full_path)
+                            except Exception as e:
+                                logging.error(f"Error removing project file: {str(e)}")
                     db.session.delete(file_to_delete)
 
         db.session.commit()
@@ -478,14 +497,17 @@ def edit_project(project_id):
 @project_bp.route('/projects/delete/<int:project_id>', methods=['POST'])
 @login_required
 def delete_project(project_id):
-    project = Project.query.get_or_404(project_id)
-    project_folder = os.path.join(current_app.root_path, f'uploads/users/students/{project.student.username}/projects/{project.title}')
+    project = db.get_or_404(Project, project_id)
+    project_folder = os.path.join(current_app.root_path, 'static', 'uploads', 'users', 'students', project.student.username, 'projects', f'project_{project.id}')
     
     db.session.delete(project)
     db.session.commit()
     
     if os.path.exists(project_folder):
-        shutil.rmtree(project_folder)
+        try:
+            shutil.rmtree(project_folder)
+        except Exception as e:
+            logging.error(f"Error removing project folder: {str(e)}")
     
     return redirect(url_for('project.list_projects'))
 
@@ -505,7 +527,7 @@ def list_vacancies():
 @vacancy_bp.route('/vacancies/delete/<int:vacancy_id>', methods=['POST'])
 @login_required
 def delete_vacancy(vacancy_id):
-    vacancy = Vacancy.query.get_or_404(vacancy_id)
+    vacancy = db.get_or_404(Vacancy, vacancy_id)
     db.session.delete(vacancy)
     db.session.commit()
     return redirect(url_for('vacancy.list_vacancies'))
@@ -535,7 +557,7 @@ def create_vacancy():
 @vacancy_bp.route('/vacancies/edit/<int:vacancy_id>', methods=['GET', 'POST'])
 @login_required
 def edit_vacancy(vacancy_id):
-    vacancy = Vacancy.query.get_or_404(vacancy_id)
+    vacancy = db.get_or_404(Vacancy, vacancy_id)
     form = VacancyForm(obj=vacancy)
     if form.validate_on_submit():
         vacancy.title = form.title.data
@@ -554,7 +576,7 @@ def edit_vacancy(vacancy_id):
 @vacancy_bp.route('/vacancies/view/<int:vacancy_id>', methods=['GET'])
 @login_required
 def view_vacancy(vacancy_id):
-    vacancy = Vacancy.query.get_or_404(vacancy_id)
+    vacancy = db.get_or_404(Vacancy, vacancy_id)
     role = current_user.role if current_user.is_authenticated else None
     return render_template('search_vacancy.html', 
                            vacancy=vacancy, 
@@ -670,7 +692,7 @@ def search_vacancies():
 @search_bp.route('/search/view_vacancy/<int:vacancy_id>')
 @login_required
 def view_vacancy(vacancy_id):
-    vacancy = Vacancy.query.get_or_404(vacancy_id)
+    vacancy = db.get_or_404(Vacancy, vacancy_id)
     role = current_user.role if current_user.is_authenticated else None
     applicants = vacancy.get_applicants() if role == RoleEnum.EMPLOYER and current_user.employer.id == vacancy.employer_id else []
     is_applied = vacancy.is_applied_by_student(current_user.student.id) if role == RoleEnum.STUDENT else False

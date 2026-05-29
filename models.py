@@ -37,12 +37,16 @@ class User(UserMixin, db.Model):
         return self.email
 
     def avatar_url(self):
-        if self.role == RoleEnum.STUDENT:
-            if self.student.avatar_path:
-                return url_for('static', filename=f'uploads/users/students/{self.student.username}/avatars/avatar.jpg')
-        elif self.role == RoleEnum.EMPLOYER:
-            if self.employer.avatar_path:
-                return url_for('static', filename=f'uploads/users/employers/{self.employer.company_name}/avatars/avatar.jpg')
+        if self.role == RoleEnum.STUDENT and self.student.avatar_path:
+            path = self.student.avatar_path.replace('\\', '/')
+            if path.startswith('static/'):
+                path = path[7:]
+            return url_for('static', filename=path)
+        elif self.role == RoleEnum.EMPLOYER and self.employer.avatar_path:
+            path = self.employer.avatar_path.replace('\\', '/')
+            if path.startswith('static/'):
+                path = path[7:]
+            return url_for('static', filename=path)
         return url_for('static', filename='icons/default_avatar.jpg')
 
 class University(db.Model):
@@ -106,7 +110,7 @@ class Vacancy(db.Model):
         return [application.student for application in self.applications]
 
     def is_applied_by_student(self, student_id):
-        return Application.query.filter_by(student_id=student_id, vacancy_id=self.id).first() is not None
+        return db.session.scalar(db.select(Application).filter_by(student_id=student_id, vacancy_id=self.id)) is not None
 
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True)

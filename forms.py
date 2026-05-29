@@ -2,7 +2,7 @@ from wtforms import BooleanField, MultipleFileField
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL, Regexp
 
 from models import University
 
@@ -14,7 +14,11 @@ class RegistrationFormStudent(FlaskForm):
     email = StringField('Электронная почта', validators=[DataRequired(), Email()])
     university = SelectField('Университет', coerce=int, validators=[DataRequired()])
     phone = StringField('Телефон', validators=[Length(max=20)])
-    username = StringField('Имя пользователя', validators=[DataRequired(), Length(max=100)])
+    username = StringField('Имя пользователя', validators=[
+        DataRequired(), 
+        Length(max=100),
+        Regexp(r'^[a-zA-Z0-9_]+$', message='Имя пользователя может содержать только латинские буквы, цифры и знаки подчеркивания')
+    ])
     password = PasswordField('Пароль', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Зарегистрироваться')

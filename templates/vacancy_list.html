@@ -11,6 +11,7 @@
       <p>{{ vacancy.description }}</p>
       <a href="{{ url_for('vacancy.edit_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-secondary">Редактировать</a>
       <form action="{{ url_for('vacancy.delete_vacancy', vacancy_id=vacancy.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Вы точно хотите удалить?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit" class="btn btn-danger">Удалить</button>
       </form>
       <a href="{{ url_for('search.view_vacancy', vacancy_id=vacancy.id) }}" class="btn btn-info">Посмотреть вакансию</a>

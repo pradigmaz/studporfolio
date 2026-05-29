@@ -18,6 +18,7 @@
         <div class="card-footer d-flex justify-content-between">
           <a href="{{ url_for('project.edit_project', project_id=project.id) }}" class="btn btn-secondary">Редактировать</a>
           <form action="{{ url_for('project.delete_project', project_id=project.id) }}" method="post" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-danger">Удалить</button>
           </form>
         </div>

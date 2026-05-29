@@ -4,6 +4,7 @@ from routes import auth_bp, project_bp, vacancy_bp, filters_bp, application_bp, 
 from config import Config
 from models import University, db, User, Student, Employer, RoleEnum
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 import logging
 from werkzeug.serving import WSGIRequestHandler
 from universities import UNIVERSITIES
@@ -14,6 +15,9 @@ logging.basicConfig(level=logging.DEBUG,
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Глобальная защита от CSRF-атак
+csrf = CSRFProtect(app)
+
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -23,7 +27,7 @@ login_manager.login_view = 'auth.login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 @app.context_processor
 def inject_role_enum():
